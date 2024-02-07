@@ -4,19 +4,21 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Mail\Auth\VerifyEmailMail;
 use App\Models\User;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Handle the incoming request for user register.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function __invoke(RegisterRequest $request)
     {
         try {
@@ -31,6 +33,7 @@ class RegisterController extends Controller
             ]);
 
             $token = $user->createToken(env('BACKEND_KEY'))->plainTextToken;
+            Mail::to($user->email)->send(new VerifyEmailMail($user));
 
             return response()->json([
                 'status' => 'success',

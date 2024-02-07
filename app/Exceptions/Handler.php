@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -37,5 +38,22 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Reponse to many request from user per minute.
+     *
+     * @return void
+     */
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof ThrottleRequestsException) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Plusieurs requête à la fois. Veuillez réessayer dans une minute.',
+            ], 429);
+        }
+
+        return parent::render($request, $exception);
     }
 }

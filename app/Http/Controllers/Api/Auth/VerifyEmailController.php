@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Http\Controllers\Api\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Mail\Auth\VerifyEmailMail;
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+
+class VerifyEmailController extends Controller
+{
+    public function sendLink (){
+        try {
+            Mail::to(auth()->user()->email)->send(new VerifyEmailMail(auth()->user()));
+        
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Un mail de vérification a été envoyé.',
+            ]);
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
+    }
+
+    public function verifyEmail(Request $request){
+        try {
+            if(!$request->user()->email_verified_at){
+                $request->user()->forceFill([
+                    'email_verified_at' => now()
+                ])->save();
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Le mail de l\'utilisateur est vérifié',
+                ], 200);
+            }else {
+                return response()->json([
+                    'status' => 'failure',
+                    'message' => 'Le mail de l\'utilisateur est déjà vérifié',
+                ], 200);
+            }
+
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
+    }
+}

@@ -1,3 +1,22 @@
-# Route GET /api/user/{id}
-# PUT /api/user/{id}
-# DELETE /api/user/{id}
+# verify unique user
+To restore user, unique validator(which verify in all users -trash also-) should send that this user exists but is deleted
+And should ask, if he want to send restore link to admin
+
+
+
+
+
+
+
+
+
+
+## Let's think this
+
+# restore user route
+  admin only can restore account
+
+# who can get user? For moment, all connected user. But we should make admin and own user only. 
+# who can update user profile? For moment, it's user only, but we can include administrator
+# who can delete user profile? For moment, it's user only, but we can include administrator
+

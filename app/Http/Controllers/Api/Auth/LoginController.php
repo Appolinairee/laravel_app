@@ -22,23 +22,30 @@ class LoginController extends Controller
 
             if(auth()->attempt($identifiers)){
                 $user = auth()->user();
-                $token = $user->createToken(env('BACKEND_KEY'))->plainTextToken;
+                if($user->email_verified_at){
+                    $token = $user->createToken(env('BACKEND_KEY'))->plainTextToken;
                 
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Utilisateur connecté',
-                    'data' => [
-                        'user' => $user,
-                        'token' => $token
-                    ]
-                ], 200);
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Utilisateur connecté',
+                        'data' => [
+                            'user' => $user,
+                            'token' => $token
+                        ]
+                    ], 200);
+                }else{
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Échec de l\'authentification.',
+                        'errors' => 'Adresse mail non encore vérifiée.'
+                    ], 404);
+                }
+
             }else{
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Échec de l\'authentification',
-                    'errors' => [
-                        'authentication' => 'Identifiants invalides'
-                    ]
+                    'errors' => 'Identifiants invalides'
                 ], 404);
             }
 

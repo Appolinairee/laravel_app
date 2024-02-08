@@ -19,10 +19,11 @@ Route::middleware('guest')->group(function () {
 
     Route::post('password/email', [PasswordResetController::class, 'sendLink']);
     Route::post('password/reset', [PasswordResetController::class, 'reset'])->middleware('signed')->name('password.reset');
+
+    Route::post('email/verify', [VerifyEmailController::class, 'verifyEmail'])->middleware('signed')->name('email.verify');
 });
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [LogoutController::class, '__invoke']);
     Route::post('email/send', [VerifyEmailController::class, 'sendLink']);
-    Route::post('email/verify', [VerifyEmailController::class, 'verifyEmail'])->middleware('signed')->name('email.verify');
 });

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\User;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class RegisterRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,17 +26,12 @@ class RegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:users,name',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8|confirmed',
+            'name' => 'sometimes|required',
+            'email' => 'sometimes|required|email|unique:users,email',
             'phone' => 'nullable|digits_between:8,20',
             'location' => 'nullable', 
         ];
     }
-
-    /**
-     * Determine if the user is authorized to make this request.
-    */
 
     public function failedValidation(Validator $validator){
         throw new HttpResponseException(response()->json([

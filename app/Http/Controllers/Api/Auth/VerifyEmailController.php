@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Mail\Auth\VerifyEmailMail;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -25,8 +26,17 @@ class VerifyEmailController extends Controller
 
     public function verifyEmail(Request $request){
         try {
-            if(!$request->user()->email_verified_at){
-                $request->user()->forceFill([
+            if (!$request->hasValidSignature()) {
+                return response()->json([
+                    'status' => 'false',
+                    'message' => 'Lien de vérification non valide.',
+                ], 400);
+            }
+
+            $user = User::where('email', $request->email)->first();
+
+            if(!$user->email_verified_at){
+                $user->forceFill([
                     'email_verified_at' => now()
                 ])->save();
 

@@ -1,2 +1,3 @@
-# Register mail verification (in pause)
-# Login  (current)
+# Route GET /api/user/{id}
+# PUT /api/user/{id}
+# DELETE /api/user/{id}

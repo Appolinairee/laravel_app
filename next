@@ -1,7 +1,6 @@
-# verify unique user
-To restore user, unique validator(which verify in all users -trash also-) should send that this user exists but is deleted
-And should ask, if he want to send restore link to admin
-
+# GET /creators/{id}
+# PUT /creators/{id}
+# GET /creators/{id}/products
 
 
 

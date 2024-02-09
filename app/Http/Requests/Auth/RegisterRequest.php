@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Rules\notInTrash;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -27,7 +28,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => 'required|unique:users,name',
-            'email' => 'required|email|unique:users,email',
+            'email' => ['required', 'email', new notInTrash, 'unique:users,email'],
             'password' => 'required|min:8|confirmed',
             'phone' => 'nullable|digits_between:8,20',
             'location' => 'nullable', 

@@ -22,19 +22,26 @@ class UserController extends Controller
     public function get($userId){
 
         try {
-            $user = User::find($userId);
+            if($userId == auth()->user()->id || $this->authorize('isAdmin', auth()->user())){
+                $user = User::find($userId);
 
-            if($user){
-                return response()->json([
-                    'status' => 'success',
-                    'data' => $user,
-                ], 201);
-            }else{
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Utilisateur non trouvé',
-                ], 404);
+                if($user){
+                    return response()->json([
+                        'status' => 'success',
+                        'data' => $user,
+                    ], 201);
+                }else{
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Utilisateur non trouvé',
+                    ], 404);
+                }
             }
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Vous n\'êtes pas autorisé à faire cette action.',
+            ], 403);
 
         } catch (Exception $e) {
             return response()->json($e);
@@ -90,7 +97,7 @@ class UserController extends Controller
 
     public function delete(User $user){
         try {
-            if (auth()->user()->id !== $user->id) {
+            if (auth()->user()->id !== $user->id && !$this->authorize('isAdmin', auth()->user())) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Vous n\'avez pas l\'autorisation de supprimer cet utilisateur.',

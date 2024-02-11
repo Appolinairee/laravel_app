@@ -1,5 +1,6 @@
 # GET /creators/{id}
 # PUT /creators/{id}
+# POST /creators/{id}
 # GET /creators/{id}/products
 
 
@@ -12,10 +13,13 @@
 
 ## Let's think this
 
-# restore user route
+# request to restore account: from user only :: post user/restore  ::: admin
+
+# restore user route ::: admin
   admin only can restore account
+
+# style welcome notification
 
 # who can get user? For moment, all connected user. But we should make admin and own user only. 
 # who can update user profile? For moment, it's user only, but we can include administrator
 # who can delete user profile? For moment, it's user only, but we can include administrator
-

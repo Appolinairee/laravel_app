@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Mail\Auth\VerifyEmailMail;
 use App\Models\User;
+use App\Notifications\WelcomeNotification;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -39,6 +40,8 @@ class VerifyEmailController extends Controller
                 $user->forceFill([
                     'email_verified_at' => now()
                 ])->save();
+
+                $user->notify(new WelcomeNotification);
 
                 return response()->json([
                     'status' => 'success',

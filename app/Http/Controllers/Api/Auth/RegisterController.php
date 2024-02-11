@@ -22,20 +22,7 @@ class RegisterController extends Controller
     public function __invoke(RegisterRequest $request)
     {
         try {
-
-            // Vérifier si l'utilisateur existe dans la corbeille
-            // $existingUser = User::onlyTrashed()
-            //                 ->where('email', $request->email)
-            //                 ->first();
-
-            // if ($existingUser) {
-            //     return response()->json([
-            //         'status' => 'error',
-            //         'message' => 'Un compte avec ces informations existe déjà. Veuillez restaurer votre compte précédent.',
-            //     ], 400);
-            // }
-
-
+            
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,

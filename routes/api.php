@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Creator\storeCreatorController;
 use App\Http\Controllers\Api\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,7 +19,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
     /*
     |--------------------------------------------------------------------------
-    | API Auth Routes
+    | API User Routes
     |--------------------------------------------------------------------------
     */
 
@@ -26,6 +27,21 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('{userId}', [UserController::class, 'get']);
         Route::put('{user}', [UserController::class, 'update']);
         Route::delete('{user}', [UserController::class, 'delete']);
+    });
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | API Creator Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('user/creator')->group(function () {
+        Route::post('', [storeCreatorController::class, '__invoke']);
+        // Route::get('{userId}', [UserController::class, 'get']);
+        // Route::put('{user}', [UserController::class, 'update']);
+        // Route::delete('{user}', [UserController::class, 'delete']);
     });
 
 });

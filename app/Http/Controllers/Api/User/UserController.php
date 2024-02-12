@@ -22,7 +22,7 @@ class UserController extends Controller
     public function get($userId){
 
         try {
-            if($userId == auth()->user()->id || $this->authorize('isAdmin', auth()->user())){
+            if($userId == auth()->user()->id || auth()->user()->isAdmin()){
                 $user = User::find($userId);
 
                 if($user){

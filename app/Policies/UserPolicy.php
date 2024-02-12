@@ -20,8 +20,8 @@ class UserPolicy
         
     }   
 
-    public function isAdmin(User $user)
+    public function isAdmin()
     {
-        return $user->role === 'admin' || $user->role === 'moderator';
+        return auth()->user()->role === 'admin' || auth()->user()->role === 'moderator';
     }
 }

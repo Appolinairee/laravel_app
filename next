@@ -11,6 +11,11 @@
 
 
 
+
+
+
+
+
 ## Let's think this
 
 # request to restore account: from user only :: post user/restore  ::: admin
@@ -23,3 +28,5 @@
 # who can get user? For moment, all connected user. But we should make admin and own user only. 
 # who can update user profile? For moment, it's user only, but we can include administrator
 # who can delete user profile? For moment, it's user only, but we can include administrator
+
+# Day format, date should be format in api directly

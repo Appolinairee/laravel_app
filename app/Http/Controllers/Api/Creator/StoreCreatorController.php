@@ -19,32 +19,38 @@ class StoreCreatorController extends Controller
     public function __invoke(StoreCreatorRequest $request)
     {
         try {
-            
-            $creator = Creator::create([
-                'name' => $request->name,
-                'phone' => $request->phone,
-                'email' => $request->email,
-                'logo' => $request->logo,
-                'description' => $request->description,
-                'location' => $request->location,
-                'delivery_options' => $request->delivery_options,
-                'payment_options' =>  $request->payment_options,
-                'user_id' => auth()->user()->id
-            ]);
 
-            // notification for admins
-            $admins = User::where('role', 'admin')->get();
-
-            foreach ($admins as $admin) {
-                $admin->notify(new NewCreatorNotification($creator->user->name));
+            if(!auth()->user()->creator){
+                $creator = Creator::create([
+                    'name' => $request->name,
+                    'phone' => $request->phone,
+                    'email' => $request->email,
+                    'logo' => $request->logo,
+                    'description' => $request->description,
+                    'location' => $request->location,
+                    'delivery_options' => $request->delivery_options,
+                    'payment_options' =>  $request->payment_options,
+                    'user_id' => auth()->user()->id
+                ]);
+    
+                // notification for admins
+                $admins = User::where('role', 'admin')->get();
+    
+                foreach ($admins as $admin) {
+                    $admin->notify(new NewCreatorNotification($creator->user->name));
+                }
+    
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Votre requête pour devenir créteur sur AtounAfrica est pris en compte.',
+                    'data' => $creator
+                ], 201);
+            }else {
+                return response()->json([
+                    'status' => 'false',
+                    'message' => 'Vous êtes déjà créateur.',
+                ], 403);
             }
-
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Votre requête pour devenir créteur sur AtounAfrica est pris en compte.',
-                'data' => $creator
-            ], 201);
 
         } catch (Exception $e) {
             return response()->json($e);

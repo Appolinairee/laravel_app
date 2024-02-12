@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use Exception;
 
 class LoginController extends Controller
@@ -41,13 +42,24 @@ class LoginController extends Controller
                     ], 404);
                 }
 
-            }else{
+            }
+            
+            // verify if user is deleted
+            $user = User::withTrashed()->where('email', $identifiers['email'])->first();
+
+            if($user->deleted_at){
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Échec de l\'authentification',
-                    'errors' => 'Identifiants invalides'
-                ], 404);
+                    'message' => 'Authentification interdite',
+                    'errors' => 'Le compte a été supprimé. L\'utilisateur doit prendre des mesures appropriées'
+                ], 403);
             }
+            
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Échec de l\'authentification',
+                'errors' => 'Identifiants invalides'
+            ], 404);
 
         } catch (Exception $e) {
             return response()->json($e);

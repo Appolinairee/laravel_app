@@ -47,10 +47,22 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the phone associated with the user.
+     * Get the creator associated with the user.
      */
     public function creator()
     {
         return $this->hasOne(Creator::class);
+    }
+
+    /**
+     * verify if a user is Admin
+     */
+    public function isAdmin()
+    {
+        if($this->role === 'admin' || $this->role == 'moderator'){
+            return true;
+        }
+
+        return false;
     }
 }

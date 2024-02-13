@@ -7,6 +7,7 @@ use App\Models\Creator;
 use App\Models\User;
 use App\Notifications\NewCreatorNotification;
 use Exception;
+use Illuminate\Support\Facades\Storage;
 
 class StoreCreatorController extends Controller
 {
@@ -21,11 +22,19 @@ class StoreCreatorController extends Controller
         try {
 
             if(!auth()->user()->creator){
+
+                // store logo first
+                if ($request->hasFile('logo')) {
+                    $logoPath = $request->file('logo')->store('logos');
+                } else {
+                    $logoPath = null;
+                }
+
                 $creator = Creator::create([
                     'name' => $request->name,
                     'phone' => $request->phone,
                     'email' => $request->email,
-                    'logo' => $request->logo,
+                    'logo' => $logoPath,
                     'description' => $request->description,
                     'location' => $request->location,
                     'delivery_options' => $request->delivery_options,
@@ -33,7 +42,7 @@ class StoreCreatorController extends Controller
                     'user_id' => auth()->user()->id
                 ]);
     
-                // notification for admins
+                // notifications for admins
                 $admins = User::where('role', 'admin')->get();
     
                 foreach ($admins as $admin) {

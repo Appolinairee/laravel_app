@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\creator\DeleteCreatorController;
 use App\Http\Controllers\Api\Creator\GetCreatorController;
 use App\Http\Controllers\Api\Creator\storeCreatorController;
 use App\Http\Controllers\Api\Creator\UpdateCreatorController;
@@ -42,10 +43,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::prefix('user/creator')->group(function () {
         Route::post('', [storeCreatorController::class, '__invoke']);
         Route::get('/{creator}', [GetCreatorController::class, '__invoke']);
-        Route::put('/{creator}', [UpdateCreatorController::class, '__invoke']);
+        Route::match(['put', 'post'], '/{creator}', [UpdateCreatorController::class, '__invoke']);
+        Route::delete('/{creator}', [DeleteCreatorController::class, '__invoke']);
     });
 
 });
-
-// Quel est l'intérêt d'envoyer des requêtes json quand l'utilisateur n'est pas trouvé
-// Bonne pratique de parser les paramètres depuis les routes

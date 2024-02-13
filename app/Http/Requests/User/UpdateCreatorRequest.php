@@ -29,7 +29,7 @@ class UpdateCreatorRequest extends FormRequest
             'name' => 'sometimes|required|unique:creators,name',
             'phone' => 'sometimes|string|unique:creators,phone',
             'email' => 'sometimes|email|unique:creators,email',
-            'logo' => 'sometimes|string',
+            'logo' => 'sometimes|image|mimes:jpeg,png,jpg|max:5120',
             'description' => 'sometimes|string',
             'location' => 'sometimes|string',
             'delivery_poptions' => 'sometimes|string',

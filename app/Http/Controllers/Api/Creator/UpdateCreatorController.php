@@ -45,7 +45,7 @@ class UpdateCreatorController extends Controller
                     Storage::delete($creator->logo);
 
                     // store new logo
-                    $logoPath = $request->file('logo')->store('logos');
+                    $logoPath = $request->file('logo')->store('logos', 'public');
                     $creator->update(['logo' => $logoPath]);
                 }
 

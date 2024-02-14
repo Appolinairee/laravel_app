@@ -25,7 +25,7 @@ class StoreCreatorController extends Controller
 
                 // store logo first
                 if ($request->hasFile('logo')) {
-                    $logoPath = $request->file('logo')->store('logos');
+                    $logoPath = $request->file('logo')->store('logos', 'public');
                 } else {
                     $logoPath = null;
                 }

@@ -28,11 +28,6 @@ class Creator extends Model
         'user_id'
     ];
 
-    protected $hidden = [
-        'user_id',
-        'id'
-    ];
-
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
@@ -43,5 +38,9 @@ class Creator extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function products(){
+        return $this->hasMany(Product::class);
     }
 }

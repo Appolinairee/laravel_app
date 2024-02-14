@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\creator\DeleteCreatorController;
 use App\Http\Controllers\Api\Creator\GetCreatorController;
 use App\Http\Controllers\Api\Creator\storeCreatorController;
 use App\Http\Controllers\Api\Creator\UpdateCreatorController;
+use App\Http\Controllers\Api\Product\StoreProductController;
 use App\Http\Controllers\Api\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,7 +34,6 @@ Route::middleware('auth:sanctum')->group(function(){
     });
 
 
-
     /*
     |--------------------------------------------------------------------------
     | API Creator Routes
@@ -45,6 +45,18 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('/{creator}', [GetCreatorController::class, '__invoke']);
         Route::match(['put', 'post'], '/{creator}', [UpdateCreatorController::class, '__invoke']);
         Route::delete('/{creator}', [DeleteCreatorController::class, '__invoke']);
+    });
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | API Products Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('products')->group(function () {
+        Route::post('', [StoreProductController::class, '__invoke']);
     });
 
 });

@@ -51,7 +51,7 @@ class StoreCreatorController extends Controller
     
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Votre requête pour devenir créteur sur AtounAfrica est pris en compte.',
+                    'message' => 'Votre requête pour devenir créateur sur AtounAfrica est pris en compte.',
                     'data' => $creator
                 ], 201);
             }else {

@@ -21,6 +21,7 @@ class Product extends Model
         'delivering',
         'old_price',
         'current_price',
+        'creator_id'
     ];
 
     public function creator(){

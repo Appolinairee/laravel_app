@@ -17,6 +17,20 @@ class StoreProductController extends Controller
         if(auth()->user()->creator){
             $creator = auth()->user()->creator;
 
+            // notifications for admins
+            $admins = User::where('role', 'admin')->get();
+            foreach ($admins as $admin) {
+                $data = [
+                    'subject' => 'Un nouveau produit MIA!',
+                    'greeting' => $admin->name,
+                    'message' => 'Le créateur @'. $creator->name .'@ a créé un nouveau produit dénommé @'. $request->title . '@.',
+                    'actionText' => 'Voir le produit pour confirmer',
+                    'actionUrl' => '',
+                ];
+
+                $admin->notify(new GeneralNotification($data));
+            }
+
             $product = Product::create([
                 'title' => $request->title,
                 'caracteristics' => $request->caracteristics,
@@ -26,26 +40,11 @@ class StoreProductController extends Controller
                 'creator_id' => $creator->id,
             ]);
 
-            // notifications for admins
-            $admins = User::where('role', 'admin')->get();
-    
-            foreach ($admins as $admin) {
-                $data = [
-                    'subject' => 'Un nouveau produit MIA!',
-                    'greeting' => $admin->name,
-                    'message' => 'Le créateur @'. $creator->name .'@ a créé un nouveau produit dénommé @'. $product->title . '@.',
-                    'actionText' => 'Voir le produit pour confirmer',
-                    'actionUrl' => '',
-                ];
-
-                $admin->notify(new GeneralNotification($data));
-            }
-
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Votre produit a été ajouté avec succès. AtounAfrica s\'empresse de le confirmer.',
-                'data' => $creator
+                'data' => $product
             ], 201);
 
         }else {

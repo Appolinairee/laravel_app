@@ -27,4 +27,8 @@ class Product extends Model
     public function creator(){
         return $this->belongsTo(Creator::class);
     }
+
+    public function galeries(){
+        return $this->hasMany(Galerie::class);
+    }
 }

@@ -31,6 +31,7 @@ class StoreProductRequest extends FormRequest
             'delivering' => 'nullable|string',
             'old_price' => 'nullable|numeric|min:0',
             'current_price' => 'required|numeric|min:0',
+            'galleries.*.file'
         ];
     }
 

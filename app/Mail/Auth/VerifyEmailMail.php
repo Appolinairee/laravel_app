@@ -20,13 +20,13 @@ class VerifyEmailMail extends Mailable
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($username, $email)
     {
-        $generate = URL::temporarySignedRoute('email.verify', now()->addMinutes(30), ['email' => $user->email]);
+        $generate = URL::temporarySignedRoute('email.verify', now()->addMinutes(30), ['email' => $email]);
         $url = str_replace(env('URL_BACKEND'), env('URL_FRONTEND'), $generate);
 
         $this->url = $url;
-        $this->username = $user->name;
+        $this->username = $username;
     }
 
     /**

@@ -30,6 +30,13 @@ class StoreCreatorController extends Controller
                     $logoPath = null;
                 }
 
+                // notifications for admins
+                $admins = User::where('role', 'admin')->get();
+    
+                foreach ($admins as $admin) {
+                    $admin->notify(new NewCreatorNotification($request->name));
+                }
+
                 $creator = Creator::create([
                     'name' => $request->name,
                     'phone' => $request->phone,
@@ -41,13 +48,6 @@ class StoreCreatorController extends Controller
                     'payment_options' =>  $request->payment_options,
                     'user_id' => auth()->user()->id
                 ]);
-    
-                // notifications for admins
-                $admins = User::where('role', 'admin')->get();
-    
-                foreach ($admins as $admin) {
-                    $admin->notify(new NewCreatorNotification($creator->user->name));
-                }
     
                 return response()->json([
                     'status' => 'success',

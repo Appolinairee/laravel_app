@@ -22,6 +22,7 @@ class RegisterController extends Controller
     public function __invoke(RegisterRequest $request)
     {
         try {
+            Mail::to($request->email)->send(new VerifyEmailMail($request->name, $request->email));
             
             $user = User::create([
                 'name' => $request->name,
@@ -34,7 +35,6 @@ class RegisterController extends Controller
             ]);
 
             $token = $user->createToken(env('BACKEND_KEY'))->plainTextToken;
-            Mail::to($user->email)->send(new VerifyEmailMail($user));
 
             return response()->json([
                 'status' => 'success',

@@ -29,6 +29,6 @@ class Product extends Model
     }
 
     public function galeries(){
-        return $this->hasMany(Galerie::class);
+        return $this->hasMany(Media::class);
     }
 }

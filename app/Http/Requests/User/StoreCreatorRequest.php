@@ -29,7 +29,7 @@ class StoreCreatorRequest extends FormRequest
             'name' => 'required|string|unique:creators,name',
             'phone' => 'required|string|unique:creators,phone',
             'email' => 'nullable|email|unique:creators,email',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:3000',
             'description' => 'nullable|string',
             'location' => 'nullable|string',
             'delivery_poptions' => 'nullable|string',

@@ -1,11 +1,15 @@
 <?php
 
 use App\Http\Controllers\Api\creator\DeleteCreatorController;
+use App\Http\Controllers\Api\Creator\DeleteLogoController;
 use App\Http\Controllers\Api\Creator\GetCreatorController;
 use App\Http\Controllers\Api\Creator\storeCreatorController;
 use App\Http\Controllers\Api\Creator\UpdateCreatorController;
+use App\Http\Controllers\Api\Product\DeleteProductController;
+use App\Http\Controllers\Api\Product\getProductController;
 use App\Http\Controllers\Api\Product\MediasController;
 use App\Http\Controllers\Api\Product\StoreProductController;
+use App\Http\Controllers\Api\Product\UpdateProductController;
 use App\Http\Controllers\Api\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -46,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('/{creator}', [GetCreatorController::class, '__invoke']);
         Route::match(['put', 'post'], '/{creator}', [UpdateCreatorController::class, '__invoke']);
         Route::delete('/{creator}', [DeleteCreatorController::class, '__invoke']);
+        Route::delete('/{creator}/logo', [DeleteLogoController::class, '__invoke']);
     });
 
 
@@ -57,8 +62,18 @@ Route::middleware('auth:sanctum')->group(function(){
     */
     Route::prefix('products')->group(function () {
         Route::post('', [StoreProductController::class, '__invoke']);
+        Route::put('/{product}', [UpdateProductController::class, '__invoke']);
+        Route::delete('/{product}', [DeleteProductController::class, '__invoke']);
+
+        // Get Product
+        Route::get('', [getProductController::class, 'getProducts']);
+        Route::get('{product}', [getProductController::class, 'getProduct']);
+
+
+        // Product Media
         Route::post('/{product}/image', [MediasController::class, 'storeImage']);
         Route::post('/{product}/video', [MediasController::class, 'storeVideo']);
+        Route::delete('/{product}/{media}', [MediasController::class, 'delete']);
     });
 
 });

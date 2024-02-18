@@ -25,7 +25,8 @@ class Creator extends Model
         'location',
         'delivery_options',
         'payment_options',
-        'user_id'
+        'user_id',
+        'deleted_at'
     ];
 
     protected $casts = [

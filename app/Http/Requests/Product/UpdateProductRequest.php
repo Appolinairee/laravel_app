@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreProductRequest extends FormRequest
+class UpdateProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,14 +26,13 @@ class StoreProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string|unique:products,title',
-            'caracteristics' => 'required|string',
-            'delivering' => 'nullable|string',
-            'old_price' => 'nullable|numeric|min:0',
-            'current_price' => 'required|numeric|min:0'
+            'title' => 'sometimes|string|unique:products,title',
+            'caracteristics' => 'sometimes|string',
+            'delivering' => 'sometimes|string',
+            'old_price' => 'sometimes|numeric|min:0',
+            'current_price' => 'sometimes|numeric|min:0',
         ];
     }
-
 
     /**
      * Determine if the user is authorized to make this request.

@@ -9,6 +9,8 @@ class Media extends Model
 {
     use HasFactory;
 
+    protected $table = 'medias';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -17,7 +19,7 @@ class Media extends Model
     protected $fillable = [
         'link',
         'type',
-        'id_product',
+        'product_id',
     ];
 
     /**

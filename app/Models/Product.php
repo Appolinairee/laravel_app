@@ -21,14 +21,15 @@ class Product extends Model
         'delivering',
         'old_price',
         'current_price',
-        'creator_id'
+        'creator_id',
+        'deleted_at'
     ];
 
     public function creator(){
         return $this->belongsTo(Creator::class);
     }
 
-    public function galeries(){
+    public function medias(){
         return $this->hasMany(Media::class);
     }
 }

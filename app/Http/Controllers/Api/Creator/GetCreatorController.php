@@ -8,7 +8,8 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 
-class GetCreatorController extends Controller
+class GetCreatorController extends Contr
+oller
 {
     /**
      * Handle the incoming request.

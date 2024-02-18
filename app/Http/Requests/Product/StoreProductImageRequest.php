@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Product;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreProductImageRequest extends FormRequest
 {
@@ -26,5 +28,19 @@ class StoreProductImageRequest extends FormRequest
         return [
             'image' => 'required|image|mimes:jpeg,png,jpg|max:4000'
         ];
+    }
+
+
+    /**
+     * Determine if the user is authorized to make this request.
+    */
+
+    public function failedValidation(Validator $validator){
+        throw new HttpResponseException(response()->json([
+            'success' => false,
+            'error' => true,
+            'message' => 'Erreur de validation',
+            'errorsList' => $validator->errors()
+        ]));
     }
 }

@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Api\Creator;
 
 use App\Http\Controllers\Controller;
 use App\Models\Creator;
+use App\Models\Product;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 
-class GetCreatorController extends Contr
-oller
+class GetCreatorController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -17,7 +17,7 @@ oller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function __invoke($creatorId)
+    public function getCreator($creatorId)
     {
         try {
             $creator = Creator::find($creatorId);
@@ -42,6 +42,33 @@ oller
                 'message' => 'Vous n\'êtes pas autorisé à faire cette action.',
             ], 403);
 
+
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
+    }
+
+    public function getCreators(Request $request)
+    {
+        try {
+            $perPage = 5;
+            $query = $request->input('query');
+            $creatorsQuery = Creator::query();
+
+            if ($query) {
+                $creatorsQuery->where('name', 'like', '%' . $query . '%');
+            }
+
+            $creatorsData = $creatorsQuery->paginate($perPage);
+
+            return response()->json([
+                'status' => 'success',
+                'current_page' => $creatorsData->currentPage(),
+                'data' => $creatorsData->items(),
+                'nextUrl' => $creatorsData->nextPageUrl(),
+                'prevUrl' => $creatorsData->previousPageUrl(),
+                'total' => $creatorsData->total(),
+            ], 200); 
 
         } catch (Exception $e) {
             return response()->json($e);

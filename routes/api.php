@@ -47,7 +47,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::prefix('user/creator')->group(function () {
         Route::post('', [storeCreatorController::class, '__invoke']);
-        Route::get('/{creator}', [GetCreatorController::class, '__invoke']);
+        Route::get('/{creator}', [GetCreatorController::class, 'getCreator']);
         Route::match(['put', 'post'], '/{creator}', [UpdateCreatorController::class, '__invoke']);
         Route::delete('/{creator}', [DeleteCreatorController::class, '__invoke']);
         Route::delete('/{creator}/logo', [DeleteLogoController::class, '__invoke']);
@@ -65,10 +65,6 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::put('/{product}', [UpdateProductController::class, '__invoke']);
         Route::delete('/{product}', [DeleteProductController::class, '__invoke']);
 
-        // Get Product
-        Route::get('', [getProductController::class, 'getProducts']);
-        Route::get('{product}', [getProductController::class, 'getProduct']);
-
 
         // Product Media
         Route::post('/{product}/image', [MediasController::class, 'storeImage']);
@@ -76,4 +72,26 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::delete('/{product}/{media}', [MediasController::class, 'delete']);
     });
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Public Creators Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/creator', [GetCreatorController::class, 'getCreators']);
+
 });
+
+
+ 
+/*
+|--------------------------------------------------------------------------
+| Public Products Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::get('products', [getProductController::class, 'getProducts']);
+Route::get('products{categorie}', [getProductController::class, 'getProducts']);
+Route::get('products/{product}', [getProductController::class, 'getProduct']);

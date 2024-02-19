@@ -1,11 +1,15 @@
-# get products by category
+# get product: return similar products
 # get products by creator
+# get products by category: categories table
+
+
+
+
+
+
+
 
 # creator is real creator when his status is 1: else he should attempt to admin verfication
-
-
-
-
 
 
 
@@ -35,3 +39,5 @@
 
 
 #how to send json format? We want to store json attrribut (such as caracteristics, delievering, ...) as text, should api receive json to transform to text, or the client should format json to text before send it?
+
+# Système de Recommandation Simple: on se base sur les métadonnées pour prooser au client des produits

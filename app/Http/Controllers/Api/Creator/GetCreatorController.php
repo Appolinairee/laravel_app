@@ -51,9 +51,9 @@ class GetCreatorController extends Controller
     public function getCreators(Request $request)
     {
         try {
-            $perPage = 5;
+            $perPage = $request->input('perPage', 15);
             $query = $request->input('query');
-            $creatorsQuery = Creator::query();
+            $creatorsQuery = Creator::where('status', 1);
 
             if ($query) {
                 $creatorsQuery->where('name', 'like', '%' . $query . '%');

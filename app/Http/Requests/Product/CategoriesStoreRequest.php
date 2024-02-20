@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreProductRequest extends FormRequest
+class CategoriesStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,22 +26,15 @@ class StoreProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string|unique:products,title',
-            'caracteristics' => 'required|string',
-            'delivering' => 'nullable|string',
-            'old_price' => 'nullable|numeric|min:0',
-            'current_price' => 'required|numeric|min:0',
-            'category_ids' => 'array|required_without_all:new_category',
-            'category_ids.*' => 'exists:categories,id',
-            'new_category' => 'nullable|string|unique:categories,name',
+            'name' => 'required|string|unique:categories',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ];
     }
 
 
     /**
-     * Determine if the user is authorized to make this request.
-    */
-
+    * Determine if the user is authorized to make this request.
+    **/
     public function failedValidation(Validator $validator){
         throw new HttpResponseException(response()->json([
             'success' => false,

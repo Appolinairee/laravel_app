@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\Product;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Creator;
 use App\Models\Product;
 use Exception;
 use Illuminate\Http\Request;
@@ -20,7 +22,6 @@ class GetProductController extends Controller
             if($query){
                 $productsQuery = Product::query();
                 $allProducts = $productsQuery->where('title', 'like', '%' . $query . '%')->get();
-                // dd($allProducts->get());
             }else{
                 $allProducts = Product::with('medias')->get();
             }
@@ -105,4 +106,77 @@ class GetProductController extends Controller
     }
 
 
+
+    public function getProduct($productId){
+        try {
+            $product = Product::with('medias', 'categories')->findOrFail($productId);
+
+            $product->similarProducts = $product->similarProducts();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $product
+            ], 200);
+
+
+        }catch (Exception $e) {
+            return response()->json($e);
+        }
+    }
+    
+    
+    public function getProductByCreator(Creator $creator, Request $request){
+        try {
+
+            $perPage = $request->get('perPage', 15);
+
+            $products = $creator->products()
+                        ->orderBy('created_at', 'desc')
+                        ->paginate($perPage);
+
+            return response()->json([
+                'status' => 'success',
+                'current_page' => $products->currentPage(),
+                'data' => $products->items(),
+                'pagination' => [
+                    'nextUrl' => $products->nextPageUrl(),
+                    'prevUrl' => $products->previousPageUrl(),
+                    'total' => $products->total(),
+                ],
+            ], 200); 
+
+        }catch (Exception $e) {
+            return response()->json($e);
+        }
+    }
+
+
+
+
+    public function getProductByCategory(Category $category, Request $request){
+        try {
+
+            $perPage = $request->get('perPage', 15);
+
+            $products = $category->products()
+                        ->orderBy('created_at', 'desc')
+                        ->paginate($perPage);
+
+            return response()->json([
+                'status' => 'success',
+                'current_page' => $products->currentPage(),
+                'data' => $products->items(),
+                'pagination' => [
+                    'nextUrl' => $products->nextPageUrl(),
+                    'prevUrl' => $products->previousPageUrl(),
+                    'total' => $products->total(),
+                ],
+            ], 200); 
+
+        }catch (Exception $e) {
+            return response()->json($e);
+        }
+    }
+
+    
 }

@@ -1,6 +1,19 @@
-# get product: return similar products
-# get products by creator
-# get products by category: categories table
+# commandes
+# delievering
+# payment
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -38,6 +51,10 @@
 # admins should made creator status to 1
 
 
-#how to send json format? We want to store json attrribut (such as caracteristics, delievering, ...) as text, should api receive json to transform to text, or the client should format json to text before send it?
+# how to send json format? We want to store json attrribut (such as caracteristics, delievering, ...) as text, should api receive json to transform to text, or the client should format json to text before send it?
 
 # Système de Recommandation Simple: on se base sur les métadonnées pour prooser au client des produits
+
+# admin should really access the data in every trash also
+
+# improve similar products

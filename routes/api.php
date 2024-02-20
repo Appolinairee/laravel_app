@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Product\MediasController;
 use App\Http\Controllers\Api\Product\StoreProductController;
 use App\Http\Controllers\Api\Product\UpdateProductController;
 use App\Http\Controllers\Api\User\UserController;
+use App\Http\Controllers\Product\CategoriesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -72,17 +73,25 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::delete('/{product}/{media}', [MediasController::class, 'delete']);
     });
 
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Public Creators Routes
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get('/creator', [GetCreatorController::class, 'getCreators']);
-
 });
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Public Creators Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/creators', [GetCreatorController::class, 'getCreators']);
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Public Creators Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/categories', [CategoriesController::class, 'getCategories']);
 
 
  
@@ -91,7 +100,7 @@ Route::middleware('auth:sanctum')->group(function(){
 | Public Products Routes
 |--------------------------------------------------------------------------
 */
-
 Route::get('products', [getProductController::class, 'getProducts']);
-Route::get('products{categorie}', [getProductController::class, 'getProducts']);
 Route::get('products/{product}', [getProductController::class, 'getProduct']);
+Route::get('products/creator/{creator}', [getProductController::class, 'getProductByCreator']);
+Route::get('products/category/{category}', [getProductController::class, 'getProductByCategory']);

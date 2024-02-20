@@ -31,6 +31,9 @@ class UpdateProductRequest extends FormRequest
             'delivering' => 'sometimes|string',
             'old_price' => 'sometimes|numeric|min:0',
             'current_price' => 'sometimes|numeric|min:0',
+            'category_ids' => 'sometimes|required_without_all:new_category',
+            'category_ids.*' => 'exists:categories,id',
+            'new_category' => 'sometimes|string|unique:categories,name',
         ];
     }
 

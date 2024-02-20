@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Api\Product;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\StoreProductRequest;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
 use App\Notifications\GeneralNotification;
-use App\Notifications\NewCreatorNotification;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
 
 class StoreProductController extends Controller
 {
@@ -37,14 +37,28 @@ class StoreProductController extends Controller
                 'delivering' => $request->delivering,
                 'old_price' => $request->old_price,
                 'current_price' => $request->current_price,
-                'creator_id' => $creator->id,
+                'creator_id' => $creator->id
             ]);
 
+            if(!empty($request->category_ids)){
+                $product->categories()->attach($request->category_ids);
+            }
+
+            if($request->new_category){
+                $slug = Str::slug($request->new_category);
+
+                $categorie = Category::create([
+                    'name' => $request->new_category,
+                    'image' => null,
+                    'slug' => $slug,
+                    'statut' => 'inactive'
+                ]);
+            }
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Votre produit a été ajouté avec succès. AtounAfrica s\'empresse de le confirmer.',
-                'data' => $product
+                'data' => $product->fresh('categories')
             ], 201);
 
         }else {

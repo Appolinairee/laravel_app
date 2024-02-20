@@ -37,6 +37,7 @@ class StoreCreatorController extends Controller
                     $admin->notify(new NewCreatorNotification($request->name));
                 }
 
+                
                 $creator = Creator::create([
                     'name' => $request->name,
                     'phone' => $request->phone,

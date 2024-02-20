@@ -32,4 +32,27 @@ class Product extends Model
     public function medias(){
         return $this->hasMany(Media::class);
     }
+
+
+    /**
+     * The products that belong to the category.
+    */
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class);
+    }
+
+    /**
+     * Get similars products of this Product
+    */
+    public function similarProducts()
+    {
+        return Product::whereHas('categories', function ($query) {
+            $query->whereIn('category_id', $this->categories->pluck('id'));
+        })
+        ->where('id', '<>', $this->id)
+        ->orderByRaw('CASE WHEN title LIKE ? THEN 1 WHEN title LIKE ? THEN 2 ELSE 3 END', ["%{$this->title}%", "%{$this->title}%"])
+        ->take(5)
+        ->get();
+    }
 }

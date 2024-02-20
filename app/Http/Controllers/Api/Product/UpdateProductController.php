@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api\Product;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\UpdateProductRequest;
+use App\Models\Category;
 use App\Models\Product;
 use Exception;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class UpdateProductController extends Controller
@@ -22,7 +24,7 @@ class UpdateProductController extends Controller
                 $productData = $request->only(['title', 'caracteristics', 'delivering', 'old_price', 'current_price']);
 
 
-                if (empty($productData)) {
+                if (empty($productData) && empty($request->category_ids) && $request->new_category) {
                     return response()->json([
                         'status' => 'error',
                         'message' => 'Aucune information à mettre à jour.',
@@ -31,10 +33,26 @@ class UpdateProductController extends Controller
 
                 $product->update($productData);
 
+                if(!empty($request->category_ids)){
+                    $product->categories()->detach();
+                    $product->categories()->attach($request->category_ids);
+                }
+
+                if($request->new_category){
+                    $slug = Str::slug($request->new_category);
+    
+                    $categorie = Category::create([
+                        'name' => $request->new_category,
+                        'image' => null,
+                        'slug' => $slug,
+                        'statut' => 'inactive'
+                    ]);
+                }
+
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Mise à jour du produit effectuée.',
-                    'data' => $product,
+                    'data' =>  $product->fresh('categories')
                 ], 200);
             }
 

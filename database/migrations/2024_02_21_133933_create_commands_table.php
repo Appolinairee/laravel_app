@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCategoriesTable extends Migration
+class CreateCommandsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,16 @@ class CreateCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('commands', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('image');
-            $table->enum('statut', ['active', 'inactive'])->default('inactive');
-            $table->string('slug')->unique();
-            $table->softDeletes();
+            $table->decimal('total_price');
+            $table->integer('product_number');
+            $table->tinyInteger('statut')->default(0);
             $table->timestamps();
         });
     }
 
+    
     /**
      * Reverse the migrations.
      *
@@ -31,6 +30,6 @@ class CreateCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('commands');
     }
 }

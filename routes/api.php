@@ -32,7 +32,6 @@ Route::middleware('auth:sanctum')->group(function(){
     | API User Routes
     |--------------------------------------------------------------------------
     */
-
     Route::prefix('user')->group(function () {
         Route::get('{userId}', [UserController::class, 'get']);
         Route::put('{user}', [UserController::class, 'update']);
@@ -45,7 +44,6 @@ Route::middleware('auth:sanctum')->group(function(){
     | API Creator Routes
     |--------------------------------------------------------------------------
     */
-
     Route::prefix('user/creator')->group(function () {
         Route::post('', [storeCreatorController::class, '__invoke']);
         Route::get('/{creator}', [GetCreatorController::class, 'getCreator']);
@@ -53,7 +51,6 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::delete('/{creator}', [DeleteCreatorController::class, '__invoke']);
         Route::delete('/{creator}/logo', [DeleteLogoController::class, '__invoke']);
     });
-
 
 
     /*
@@ -88,13 +85,13 @@ Route::get('/creators', [GetCreatorController::class, 'getCreators']);
 
 /*
 |--------------------------------------------------------------------------
-| Public Creators Routes
+| Public Categories Routes
 |--------------------------------------------------------------------------
 */
 Route::get('/categories', [CategoriesController::class, 'getCategories']);
 
 
- 
+
 /*
 |--------------------------------------------------------------------------
 | Public Products Routes

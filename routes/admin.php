@@ -1,7 +1,5 @@
 <?php
 
-// use App\Http\Controllers\LogoutController;
-
 use App\Http\Controllers\Product\CategoriesController;
 use Illuminate\Support\Facades\Route;
 

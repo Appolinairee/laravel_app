@@ -64,4 +64,13 @@ class User extends Authenticatable
 
         return false;
     }
+
+
+    /**
+     * The cammand of user
+     */
+    public function commands()
+    {
+        return $this->hasMany(Command::class);
+    }
 }

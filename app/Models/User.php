@@ -66,11 +66,8 @@ class User extends Authenticatable
     }
 
 
-    /**
-     * The cammand of user
-     */
-    public function commands()
-    {
-        return $this->hasMany(Command::class);
+    public function orders(){
+        return $this->hasMany(Order::class);
     }
+
 }

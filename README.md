@@ -12,13 +12,13 @@ AtounAfrica is african marketplace for made in africa creators.We believe in afr
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+## AUTH
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
 If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+## USER
 
 We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
 
@@ -38,18 +38,47 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 - **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
 - **[Lendio](https://lendio.com)**
 
-## Contributing
+## CREATOR
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+
+## PRODUCT
+creator can add product disponibility
+    -1: in rupture
+     0: disponible by comand
+     1: disponible
+     let's specify also number of product if only if product disponiblity is 1
+
+
+
+
+## CATEGORY
+
+
+
+
+## ORDER
+order status is defined as tinyInteger
+   -1: annulé 
+    0: juste dans le panier
+    1: en traitement pour livraison
+    2: en attente de paiement
+    3: en cours de paiement
+    4: payé
+    5: expédié
+    6: validé
+    7: Remboursé
+
+
 
 ## Code of Conduct
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+
 
 ## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within Laravel, please send an e-mail to ADANDE Appolinaire via [adandappolinaire229@gmail.com](adandappolinaire229@gmail.com). All security vulnerabilities will be promptly addressed.
+
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The Atoun Africa Marketplace is  licensed under the [AtounAfrica]().

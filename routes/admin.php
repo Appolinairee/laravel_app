@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Product\CategoriesController;
+use App\Http\Controllers\Api\Product\CategoriesController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {

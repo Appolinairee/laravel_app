@@ -21,7 +21,7 @@ class UpdateProductController extends Controller
                     'message' => 'Vous n\'avez pas l\'autorisation de mettre à jour ce créateur.',
                 ], 403);
             }else{
-                $productData = $request->only(['title', 'caracteristics', 'delivering', 'old_price', 'current_price']);
+                $productData = $request->only(['title', 'caracteristics', 'delivering', 'old_price', 'current_price', 'disponibility']);
 
 
                 if (empty($productData) && empty($request->category_ids) && $request->new_category) {
@@ -30,6 +30,18 @@ class UpdateProductController extends Controller
                         'message' => 'Aucune information à mettre à jour.',
                     ], 400);
                 }
+
+
+                // quantity can be update when disponibility is 1(true)
+                if(isset($request->quantity) && $request->disponibility == 1){
+                    $productData['quantity'] = $request->quantity;
+                }else if(isset($request->quantity) && $request->disponibility != 1){
+                    return response()->json([
+                        'status' => 'false',
+                        'message' => 'Produit non disponible. Vous ne pouvez indiquer le nombre',
+                    ], 403);
+                }
+
 
                 $product->update($productData);
 

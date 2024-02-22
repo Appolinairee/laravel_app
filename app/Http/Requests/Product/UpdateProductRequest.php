@@ -34,6 +34,8 @@ class UpdateProductRequest extends FormRequest
             'category_ids' => 'sometimes|required_without_all:new_category',
             'category_ids.*' => 'exists:categories,id',
             'new_category' => 'sometimes|string|unique:categories,name',
+            'disponibility' => 'sometimes|in:-1,0,1',
+            'quantity' => 'sometimes|integer|min:1',
         ];
     }
 

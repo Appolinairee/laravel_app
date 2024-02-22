@@ -31,14 +31,29 @@ class StoreProductController extends Controller
                 $admin->notify(new GeneralNotification($data));
             }
 
-            $product = Product::create([
+            $productData = [
                 'title' => $request->title,
                 'caracteristics' => $request->caracteristics,
                 'delivering' => $request->delivering,
                 'old_price' => $request->old_price,
                 'current_price' => $request->current_price,
-                'creator_id' => $creator->id
-            ]);
+                'creator_id' => $creator->id,
+                'disponibility' => $request->disponibility,
+            ];
+
+
+            // quantity can be defined when disponibility is 1(true)
+            if(isset($request->quantity) && $request->disponibility == 1){
+                $productData['quantity'] = $request->quantity;
+            }
+            else if(isset($request->quantity) && $request->disponibility != 1){
+                return response()->json([
+                    'status' => 'false',
+                    'message' => 'Produit non disponible. Vous ne pouvez indiquer le nombre',
+                ], 403);
+            }
+
+            $product = Product::create($productData);
 
             if(!empty($request->category_ids)){
                 $product->categories()->attach($request->category_ids);
@@ -47,7 +62,7 @@ class StoreProductController extends Controller
             if($request->new_category){
                 $slug = Str::slug($request->new_category);
 
-                $categorie = Category::create([
+                Category::create([
                     'name' => $request->new_category,
                     'image' => null,
                     'slug' => $slug,

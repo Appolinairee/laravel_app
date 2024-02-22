@@ -11,7 +11,7 @@ use App\Http\Controllers\Api\Product\MediasController;
 use App\Http\Controllers\Api\Product\StoreProductController;
 use App\Http\Controllers\Api\Product\UpdateProductController;
 use App\Http\Controllers\Api\User\UserController;
-use App\Http\Controllers\Product\CategoriesController;
+use App\Http\Controllers\Api\Product\CategoriesController;
 use Illuminate\Support\Facades\Route;
 
 /*

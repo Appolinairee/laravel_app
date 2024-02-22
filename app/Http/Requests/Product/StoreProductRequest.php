@@ -34,6 +34,8 @@ class StoreProductRequest extends FormRequest
             'category_ids' => 'array|required_without_all:new_category',
             'category_ids.*' => 'exists:categories,id',
             'new_category' => 'nullable|string|unique:categories,name',
+            'disponibility' => 'required|in:-1,0,1',
+            'quantity' => 'nullable|integer|min:1',
         ];
     }
 

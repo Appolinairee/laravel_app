@@ -22,7 +22,9 @@ class Product extends Model
         'old_price',
         'current_price',
         'creator_id',
-        'deleted_at'
+        'deleted_at',
+        'disponibility',
+        'quantity'
     ];
 
     public function creator(){

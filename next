@@ -1,3 +1,17 @@
+# orders
+    Passer une nouvelle commande : POST /api/orders
+
+    Mettre à jour les détails d'une commande spécifique :PUT /api/orders/{order_id}
+    Confirmer le paiement d'une commande: PUT /api/orders/{order_id}/confirm-payment
+
+    Lister toutes les commandes :GET /api/orders
+    Lister toutes les commandes d'un utilisateur : GET /api/orders/user/{user_id}
+    Récupérer les détails d'une commande spécifique : GET /api/orders/{order_id}
+    Obtenir l'historique des commandes : GET /api/orders/user/{user_id}/history
+
+    Annuler une commande : DELETE /api/orders/{order_id}
+
+
 # commandes
     # store command : auth
     # put command : command creator

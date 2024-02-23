@@ -1,3 +1,10 @@
+# orderItems
+    # update orderItem
+    # delete orderItem
+    # get OrderItem
+
+
+
 # orders
     Passer une nouvelle commande : POST /api/orders
 
@@ -10,14 +17,6 @@
     Obtenir l'historique des commandes : GET /api/orders/user/{user_id}/history
 
     Annuler une commande : DELETE /api/orders/{order_id}
-
-
-# commandes
-    # store command : auth
-    # put command : command creator
-
-    # get commands by user : commmands creator
-    # get commands by creators: in trash, by status : creators
 
 # delievering
 # payment

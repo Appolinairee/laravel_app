@@ -57,4 +57,13 @@ class Product extends Model
         ->take(5)
         ->get();
     }
+
+
+    /**
+     * Get similars products of this Product
+    */
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
 }

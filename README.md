@@ -69,6 +69,14 @@ order status is defined as tinyInteger
     7: Remboursé
 
 
+    Order_item: it's have one to many relationship with orders. 
+    Order_item represents one product in orders
+    His Status is different to orders satatus and may be:
+    -1 : annulé
+     0 : en cours
+     1 : confirmé
+
+
 
 ## Code of Conduct
 

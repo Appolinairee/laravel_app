@@ -30,4 +30,26 @@ class Order extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+
+
+    public function order_items() {
+        return $this->hasMany(OrderItem::class);
+    }
+
+
+
+    
+    /**
+     * Total currrent amount of order.
+     *
+     * @return float
+     */
+    public function calculateTotalAmount()
+    {
+        $orderItems = $this->order_items()->with('product')->get();
+
+        return $orderItems->sum(function ($item) {
+            return $item->product->current_price;
+        });
+    }
 }

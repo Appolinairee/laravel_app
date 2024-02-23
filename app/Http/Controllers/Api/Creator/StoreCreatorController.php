@@ -49,7 +49,7 @@ class StoreCreatorController extends Controller
                     'payment_options' =>  $request->payment_options,
                     'user_id' => auth()->user()->id
                 ]);
-    
+        
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Votre requête pour devenir créateur sur AtounAfrica est pris en compte.',

@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class OrderStoreRequest extends FormRequest
+class OrderItemStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,11 +26,9 @@ class OrderStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'shipping_address' => 'required|string',
-            'shipping_price' => 'required|numeric|min:0',
-            'shipping_preview' => 'required|string',
-            'shipping_service' => 'required|string',
-            'shipping_date' => 'required|date', 
+            'order_id' => 'sometimes|exists:orders,id',
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1',
         ];
     }
 

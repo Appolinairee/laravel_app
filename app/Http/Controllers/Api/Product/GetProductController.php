@@ -127,7 +127,7 @@ class GetProductController extends Controller
     
     public function getProductByCreator(Creator $creator, Request $request){
         try {
-
+            
             $perPage = $request->get('perPage', 15);
 
             $products = $creator->products()

@@ -1,28 +1,28 @@
-# orderItems
-    # think to create general policy to manage orderItem
+# transaction
+    Créer une transaction de paiement :
+        Type : POST
+        Endpoint : /api/payment-transactions
+        Description : Crée une nouvelle transaction de paiement.
+        Données requises : user_id, product_id, amount_paid.
+
+    Mettre à jour le statut d'une transaction (par exemple, annuler) :
+        Type : PUT
+        Endpoint : /api/payment-transactions/{transaction_id}
+        Description : Met à jour le statut d'une transaction de paiement.
 
 
+    Lister toutes les transactions d'un utilisateur :
 
-# orders
-    Passer une nouvelle commande : POST /api/orders
-
-    Mettre à jour les détails d'une commande spécifique :PUT /api/orders/{order_id}
-    Confirmer le paiement d'une commande: PUT /api/orders/{order_id}/confirm-payment
-
-    Lister toutes les commandes :GET /api/orders
-    Lister toutes les commandes d'un utilisateur : GET /api/orders/user/{user_id}
-    Récupérer les détails d'une commande spécifique : GET /api/orders/{order_id}
-    Obtenir l'historique des commandes : GET /api/orders/user/{user_id}/history
-
-    Annuler une commande : DELETE /api/orders/{order_id}
-
-# delievering
-# payment
+        Type : GET
+        Endpoint : /api/payment-transactions/user/{user_id}
+        Description : Récupère toutes les transactions de paiement d'un utilisateur.
 
 
+    Obtenir les transactions d'un utilisateur pour un produit :
 
-
-
+        Type : GET
+        Endpoint : /api/payment-transactions/user/{user_id}/product/{product_id}
+        Description : Récupère toutes les transactions de paiement d'un utilisateur pour un produit spécifique.
 
 
 

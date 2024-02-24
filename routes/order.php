@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\Order\OrderGetController;
 use App\Http\Controllers\Api\Order\OrderItemController;
 use App\Http\Controllers\Api\Order\OrderItemStoreController;
 use App\Http\Controllers\Api\Order\OrderItemUpdateController;
 use App\Http\Controllers\Api\Order\OrderStoreController;
+use App\Http\Controllers\Api\Order\OrderUpdateController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -14,9 +16,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
     |------------------------
     */
 
-    Route::post('', [OrderStoreController::class, '__invoke']);
+    Route::match(['post', 'put'] ,'{order}', [OrderUpdateController::class, '__invoke']);
+
+    Route::get('/{orderId}', [OrderGetController::class, 'getOrder']);
+    Route::get('/user/{user}', [OrderGetController::class, 'ordersByUser']);
+    Route::get('/creator/{creator}', [OrderGetController::class, 'ordersByCreator']);
+    Route::get('/product/{product}', [OrderGetController::class, 'ordersByProduct']);
 
 
+    Route::delete('{order}', [OrderGetController::class, 'delete']);
 
 
     /*

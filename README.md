@@ -60,13 +60,16 @@ creator can add product disponibility
 order status is defined as tinyInteger
    -1: annulé 
     0: juste dans le panier
-    1: en traitement pour livraison
-    2: en attente de paiement
-    3: en cours de paiement
-    4: payé
-    5: expédié
-    6: validé
-    7: Remboursé
+    1: en traitement pour livraison : user
+    2: en attente de paiement : user
+    3: en cours de paiement : user
+    4: payé : user by paiement
+    5: expédié : creator, admin
+    6: validé : user
+    7: Remboursé : admin
+
+    An order can contain multiple products but for the same creator. 
+    When products are for the différent creator, we should create two differents orders
 
 
     Order_item: it's have one to many relationship with orders. 

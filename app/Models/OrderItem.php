@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -15,7 +14,7 @@ class OrderItem extends Model
         'product_id',
         'quantity',
         'status',
-        'unit_price',
+        'unit_price'
     ];
 
 

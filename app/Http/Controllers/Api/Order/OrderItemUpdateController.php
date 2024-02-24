@@ -7,6 +7,7 @@ use App\Http\Requests\Order\OrderItemUpdateRequest;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
 class OrderItemUpdateController extends Controller
@@ -20,16 +21,9 @@ class OrderItemUpdateController extends Controller
     public function __invoke(OrderItem $orderItem, OrderItemUpdateRequest $request)
     {
         try {
-
-            if (auth()->user()->id !== $orderItem->order->user->id) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Vous n\'avez pas l\'autorisation de mettre à jour ce créateur.',
-                ], 403);
-            }
+            $this->authorize('updateOrderItem', $orderItem->order);
 
             $orderItemData = $request->only(['quantity', 'status', 'order_id']);
-
 
             if (empty($orderItemData)) {
                 return response()->json([
@@ -38,8 +32,7 @@ class OrderItemUpdateController extends Controller
                 ], 400);
             }
 
-
-            // when product number is set by creator and under request quantity
+            // when product quantity is set by creator and under request quantity
             if($orderItem->product->quantity && $orderItem->product->quantity < $request->quantity){
                 return response()->json([
                     'status' => 'error',
@@ -54,6 +47,13 @@ class OrderItemUpdateController extends Controller
                 'message' => "L'unité de commande est mise à jour.",
                 'data' => $orderItem->makeHidden(['order', 'product'])
             ], 200);
+
+        } catch (AuthorizationException $e) {
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Vous n\'êtes pas autorisé à faire cette action.',
+            ], 403);
 
         } catch (Exception $e) {
             return response()->json($e);

@@ -19,6 +19,7 @@ class Order extends Model
         'shipping_preview',
         'shipping_service',
         'shipping_date',
+        'creator_id'
     ];
 
     protected $casts = [
@@ -51,5 +52,15 @@ class Order extends Model
         return $orderItems->sum(function ($item) {
             return $item->product->current_price;
         });
+    }
+
+
+    /**
+     * Return correspondant vendor for order.
+     *
+     */
+    public function creator()
+    {
+        return $this->belongsTo(Creator::class);
     }
 }

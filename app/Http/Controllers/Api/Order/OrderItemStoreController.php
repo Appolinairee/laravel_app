@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
 class OrderItemStoreController extends Controller
@@ -22,19 +23,32 @@ class OrderItemStoreController extends Controller
     public function __invoke(OrderItemStoreRequest $request)
     {
         try {
+            $product = Product::find($request->product_id);
+
             if(!$request->order_id){
                 $order = Order::create([
                     'user_id' => auth()->user()->id,
+                    'creator_id' => $product->creator_id
                 ]);
 
                 $message = "Création d'une nouvelle commande. Produit ajouté à la commande.";
-
             }else{
+                
                 $order = Order::findOrFail($request->order_id);
-                $message = "Produit ajouté à la commande";
-            }
 
-            $product = Product::find($request->product_id);
+                if($product->creator_id !== $order->creator_id){
+                    $order = Order::create([
+                        'user_id' => auth()->user()->id,
+                        'creator_id' => $product->creator_id
+                    ]);
+    
+                    $message = "Le produit est pour un créateur diffférent. Il a été ajouté à une nouvelle commande.";
+                }else{
+                    $this->authorize('storeInExistingOrder', $order);
+                    $message = "Produit ajouté à la commande";
+                }
+
+            }
 
 
             // when product already exists in order
@@ -61,7 +75,13 @@ class OrderItemStoreController extends Controller
                 'totalAmount' => $totalAmount,
             ], 201);
 
-        } catch (Exception $e) {
+        } catch (AuthorizationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Vous n\'êtes pas autorisé à faire cette action.',
+            ], 403);
+            
+        }   catch (Exception $e) {
             return response()->json($e);
         }
     }

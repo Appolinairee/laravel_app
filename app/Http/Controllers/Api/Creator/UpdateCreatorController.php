@@ -7,7 +7,6 @@ use App\Http\Requests\User\UpdateCreatorRequest;
 use App\Mail\Auth\VerifyEmailMail;
 use App\Models\Creator;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -70,6 +69,7 @@ class UpdateCreatorController extends Controller
             return response()->json($e);
         }
     }
+
 
     private function updateEmail($creator){
         $creator->update([

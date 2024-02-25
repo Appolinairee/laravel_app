@@ -86,6 +86,7 @@ class OrderPolicy
         return ($user->id === $order->user_id) || $user->isAdmin();
     }
 
+    
     /**
      * Determine whether the user can permanently delete the model.
      *

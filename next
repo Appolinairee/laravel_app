@@ -1,9 +1,9 @@
 # transaction
-    Créer une transaction de paiement :
-        Type : POST
-        Endpoint : /api/payment-transactions
-        Description : Crée une nouvelle transaction de paiement.
-        Données requises : user_id, product_id, amount_paid.
+    
+    Mettre à jour les prix unitaires des orders_items
+    Vérifier la logique quand un order_id est miseà jour pour un produit (...)
+    Logique de la corbeille
+
 
     Mettre à jour le statut d'une transaction (par exemple, annuler) :
         Type : PUT
@@ -11,22 +11,7 @@
         Description : Met à jour le statut d'une transaction de paiement.
 
 
-    Lister toutes les transactions d'un utilisateur :
-
-        Type : GET
-        Endpoint : /api/payment-transactions/user/{user_id}
-        Description : Récupère toutes les transactions de paiement d'un utilisateur.
-
-
-    Obtenir les transactions d'un utilisateur pour un produit :
-
-        Type : GET
-        Endpoint : /api/payment-transactions/user/{user_id}/product/{product_id}
-        Description : Récupère toutes les transactions de paiement d'un utilisateur pour un produit spécifique.
-
-
-
-
+# messages
 
 
 
@@ -58,6 +43,9 @@
 
 ## Let's think this
 
+# demande de remboursement par les utilisateurs.
+# confirmation de rembourement par les admins   
+
 # request to restore account: from user only :: post user/restore  ::: admin
 # restore user route ::: admin
 #  admin only can restore account
@@ -70,7 +58,7 @@
 
 # how to send json format? We want to store json attrribut (such as caracteristics, delievering, ...) as text, should api receive json to transform to text, or the client should format json to text before send it?
 
-# Système de Recommandation Simple: on se base sur les métadonnées pour prooser au client des produits
+# Système de Recommandation Simple: on se base sur les métadonnées pour proposer au client des produits
 
 # admin should really access the data in every trash also
 

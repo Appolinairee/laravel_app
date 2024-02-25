@@ -59,14 +59,11 @@ creator can add product disponibility
 ## ORDER
 order status is defined as tinyInteger
    -1: annulé 
-    0: juste dans le panier
-    1: en traitement pour livraison : user
-    2: en attente de paiement : user
-    3: en cours de paiement : user
-    4: payé : user by paiement
-    5: expédié : creator, admin
-    6: validé : user
-    7: Remboursé : admin
+    0: paiement
+    1: livraison
+    2: expédié
+    3: validé
+    4: remboursé
 
     An order can contain multiple products but for the same creator. 
     When products are for the différent creator, we should create two differents orders
@@ -75,11 +72,21 @@ order status is defined as tinyInteger
     Order_item: it's have one to many relationship with orders. 
     Order_item represents one product in orders
     His Status is different to orders satatus and may be:
-    -1 : annulé
+    -1 : remboursé
      0 : en cours
-     1 : confirmé
+     1 : payé
 
 
+
+     For Payments
+          amount_paid est le montant effectivement payé jusqu'à présent.
+          payment_type indique le type de paiement (par tranches ou en un coup).
+          payment_status représente l'état du paiement (remboursé, en cours, payé).
+
+          status: -1(remboursé) ,  0(en cours), 1 (payé)
+          type: 0(par tranches), 1 (en un coup)
+
+          5.0000 Fcfa is the contributions minimum
 
 ## Code of Conduct
 

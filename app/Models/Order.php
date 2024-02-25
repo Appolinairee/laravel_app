@@ -19,7 +19,10 @@ class Order extends Model
         'shipping_preview',
         'shipping_service',
         'shipping_date',
-        'creator_id'
+        'creator_id',
+        'amount_paid',
+        'payment_type',
+        'payment_status'
     ];
 
     protected $casts = [
@@ -62,5 +65,14 @@ class Order extends Model
     public function creator()
     {
         return $this->belongsTo(Creator::class);
+    }
+
+
+    /**
+     * Return contributions for an order.
+     */
+    public function contributions()
+    {
+        return $this->hasMany(Contribution::class);
     }
 }

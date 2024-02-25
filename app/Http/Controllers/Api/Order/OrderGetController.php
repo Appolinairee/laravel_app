@@ -23,14 +23,16 @@ class OrderGetController extends Controller
     public function getOrder($orderId)
     {
         try {
-
             $order = Order::with('order_items', 'creator')->findOrFail($orderId);
 
             $this->authorize('getOrder', $order);
 
             return response()->json([
                 'status' => 'success',
-                'data' => $order
+                'data' => [
+                    'order' => $order,
+                    'contributions' => $order->contributions
+                ]
             ], 200);
         } catch (AuthorizationException $e) {
             return response()->json([
@@ -41,8 +43,6 @@ class OrderGetController extends Controller
             return response()->json($e);
         }
     }
-
-
 
 
 

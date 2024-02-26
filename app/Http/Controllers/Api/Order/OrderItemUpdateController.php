@@ -40,6 +40,14 @@ class OrderItemUpdateController extends Controller
                 ], 403);
             }
 
+            // when order status is -1 (when order is under payment and receive its first transaction)
+            if($orderItem->order->status > 1 || $orderItem->order->amount_paid > 0 ){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Impossible de mettre à jour la commande d\'appartenance. Paiement en cours.',
+                ], 403);
+            }
+
             $orderItem->update($orderItemData);
 
             return response()->json([

@@ -9,7 +9,6 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\Request;
 
 class OrderItemStoreController extends Controller
 {
@@ -42,12 +41,20 @@ class OrderItemStoreController extends Controller
                         'creator_id' => $product->creator_id
                     ]);
     
-                    $message = "Le produit est pour un créateur diffférent. Il a été ajouté à une nouvelle commande.";
+                    $message = "Le produit est pour un créateur différent. Il a été ajouté à une nouvelle commande.";
                 }else{
                     $this->authorize('storeInExistingOrder', $order);
+
                     $message = "Produit ajouté à la commande";
                 }
+            }
 
+            // when order status is -1 (when order is under payment and receive its first transaction)
+            if($order->status > 1 || $order->amount_paid > 0 ){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Impossible de mettre à jour la commande d\'appartenance. Paiement en cours.',
+                ], 403);
             }
 
 

@@ -88,6 +88,13 @@ order status is defined as tinyInteger
 
           5.0000 Fcfa is the contributions minimum
 
+     Une transaction ne peut être mise à jour. On ne peut changer le montant payé manuellment. On ne peut changer la commande pour laquelle la transaction est effectuée.
+
+     On peut mettre à jour la commande à laquelle appartient un order_item si et seulement si la commande est encore au statut -1. Mais si une première transaction a été déjà effectuée à propos deladite commande, celà reste impossible.
+
+
+     Pour se faire rembourser une commande, l'utilisateur envoie une requête aux administrateurs. (notifications, et mail envoyé)
+
 ## Code of Conduct
 
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Creator\DeleteLogoController;
 use App\Http\Controllers\Api\Creator\GetCreatorController;
 use App\Http\Controllers\Api\Creator\storeCreatorController;
 use App\Http\Controllers\Api\Creator\UpdateCreatorController;
+use App\Http\Controllers\Api\Message\MessageStoreController;
 use App\Http\Controllers\Api\Product\DeleteProductController;
 use App\Http\Controllers\Api\Product\getProductController;
 use App\Http\Controllers\Api\Product\MediasController;
@@ -69,6 +70,25 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/{product}/video', [MediasController::class, 'storeVideo']);
         Route::delete('/{product}/{media}', [MediasController::class, 'delete']);
     });
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | API Messages Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('messages')->group(function () {
+        Route::post('', [MessageStoreController::class, '__invoke']);
+        // Route::put('/{product}', [UpdateProductController::class, '__invoke']);
+        // Route::delete('/{product}', [DeleteProductController::class, '__invoke']);
+
+        // Product Media
+        // Route::post('/{product}/image', [MediasController::class, 'storeImage']);
+        // Route::post('/{product}/video', [MediasController::class, 'storeVideo']);
+        // Route::delete('/{product}/{media}', [MediasController::class, 'delete']);
+    });
+
 
 });
 

@@ -36,7 +36,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     |------------------------
     */
     Route::prefix('items')->group(function () {
-        Route::post('', [OrderItemStoreController::class, '__invoke']);
+        Route::post('/store', [OrderItemStoreController::class, '__invoke']);
         Route::put('/{orderItem}', [OrderItemUpdateController::class, '__invoke']);
         Route::get('/{orderItem}', [OrderItemController::class, 'orderItem']);
         Route::delete('/{orderItem}', [OrderItemController::class, 'delete']);

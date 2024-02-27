@@ -1,6 +1,4 @@
 # messages
-    # model eloquent: think about polymorphics
-    # store message
     # update message
     # get messages (by)
     # can delete message.

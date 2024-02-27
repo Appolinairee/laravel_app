@@ -23,8 +23,10 @@ class Message extends Model
         'receiver_id',
         'email_verified_at'
     ];
-
     
-
+    public function receiver()
+    {
+        return $this->morphTo(null, 'receiver_type', 'receiver_id');
+    }
 
 }

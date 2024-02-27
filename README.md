@@ -95,6 +95,21 @@ order status is defined as tinyInteger
 
      Pour se faire rembourser une commande, l'utilisateur envoie une requête aux administrateurs. (notifications, et mail envoyé)
 
+
+## Message
+     Les messages sont carcatérisés: 
+     content => pour stocker soit du texte soit l'url de l'image
+     type => image ou text
+     receiver_type => user, vendor, admin
+
+
+
+
+
+
+
+
+
 ## Code of Conduct
 
 

@@ -5,7 +5,9 @@ use App\Http\Controllers\Api\Creator\DeleteLogoController;
 use App\Http\Controllers\Api\Creator\GetCreatorController;
 use App\Http\Controllers\Api\Creator\storeCreatorController;
 use App\Http\Controllers\Api\Creator\UpdateCreatorController;
+use App\Http\Controllers\Api\Message\MessageController;
 use App\Http\Controllers\Api\Message\MessageStoreController;
+use App\Http\Controllers\Api\Message\MessageUpdateController;
 use App\Http\Controllers\Api\Product\DeleteProductController;
 use App\Http\Controllers\Api\Product\getProductController;
 use App\Http\Controllers\Api\Product\MediasController;
@@ -80,7 +82,8 @@ Route::middleware('auth:sanctum')->group(function(){
     */
     Route::prefix('messages')->group(function () {
         Route::post('', [MessageStoreController::class, '__invoke']);
-        // Route::put('/{product}', [UpdateProductController::class, '__invoke']);
+        Route::put('/{message}', [MessageUpdateController::class, '__invoke']);
+        Route::delete('/{message}', [MessageController::class, 'delete']);
         // Route::delete('/{product}', [DeleteProductController::class, '__invoke']);
 
         // Product Media

@@ -2,12 +2,11 @@
 
 namespace App\Http\Requests\Message;
 
-use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class MessageStoreRequest extends FormRequest
+class MessageUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,15 +26,11 @@ class MessageStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'type' => 'required|in:image,text',
-            'text' => $this->input('type') === 'text' ? 'required|string' : '',
-            'image' => $this->input('type') === 'image' ? 'required|image|mimes:jpeg,png,jpg,svg|max:2048' : '',
-            'receiver_type' => 'required|in:atoun,user,vendor',
-            'receiver_id' => $this->input('receiver_type') === 'vendor' ? 'required|exists:creators,id' : (($this->input('receiver_type') !== 'atoun')? 'required|exists:users,id' : 'required|in:0'),
+            "text" => "sometimes|string",
+            "status" => "sometimes|in:0,1"
         ];
     }
 
-    
     /**
     * Determine if the user is authorized to make this request.
     **/

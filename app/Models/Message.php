@@ -21,7 +21,8 @@ class Message extends Model
         'receiver_type',
         'sender_id',
         'receiver_id',
-        'email_verified_at'
+        'email_verified_at',
+        'status'
     ];
     
     public function receiver()

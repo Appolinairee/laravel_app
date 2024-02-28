@@ -102,10 +102,16 @@ order status is defined as tinyInteger
      type => image ou text
      receiver_type => user, vendor, admin
 
+     Mise à jour de message
+          content
+          To update message, user shouldn't specify type, receiuver_type, receiver_id,.
 
-
-
-
+          In sum, only the content (text) can be updated. When the content type is image, nothing.
+     
+     Si un message est vu, il ne pourrait pas être modifié
+     
+     Delete Message
+          Only message sender can delete message: soft delete
 
 
 

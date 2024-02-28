@@ -25,7 +25,7 @@ class MessageStoreController extends Controller
             }else if($request->type === 'text'  && $request->text){
                 $contentBrut = $request->text;
                 $contentTrimed = trim($contentBrut);
-                $content = strip_tags($contentBrut);
+                $content = strip_tags($contentTrimed);
             }
 
             $message = Message::create([

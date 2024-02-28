@@ -1,7 +1,5 @@
 # messages
-    # update message
-    # get messages (by)
-    # can delete message.
+    # get messages by user, by creator, by admin
 
 
 

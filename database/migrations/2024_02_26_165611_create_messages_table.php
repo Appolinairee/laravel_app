@@ -18,6 +18,7 @@ class CreateMessagesTable extends Migration
             $table->text('content');
             $table->string('type');
             $table->string('receiver_type');
+            $table->tinyInteger('status')->default(0);
             $table->unsignedBigInteger('sender_id');
             $table->unsignedBigInteger('receiver_id');
             // Foreign keys

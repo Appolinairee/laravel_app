@@ -84,18 +84,14 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('', [MessageStoreController::class, '__invoke']);
         Route::put('/{message}', [MessageUpdateController::class, '__invoke']);
         Route::delete('/{message}', [MessageController::class, 'delete']);
-        // Route::delete('/{product}', [DeleteProductController::class, '__invoke']);
-
-        // Product Media
-        // Route::post('/{product}/image', [MediasController::class, 'storeImage']);
-        // Route::post('/{product}/video', [MediasController::class, 'storeVideo']);
-        // Route::delete('/{product}/{media}', [MediasController::class, 'delete']);
+        Route::get('/user/{user}', [MessageController::class, 'messagesByUser']);
+        Route::get('/creator/{creator}', [MessageController::class, 'messagesByCreator']);
     });
-
 
 });
 
-
+// un utilisateur peut envoyer de message à {créateur, atoun}
+// un créateur peut envoyer de message à {user, atoun}
 
 /*
 |--------------------------------------------------------------------------

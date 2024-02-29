@@ -27,7 +27,21 @@ class Message extends Model
     
     public function receiver()
     {
-        return $this->morphTo(null, 'receiver_type', 'receiver_id');
+        if($this->receiver_type == "vendor"){
+            return $this->belongsTo(Creator::class, 'receiver_id');
+        }
+
+        if($this->receiver_type == "user"){
+            return $this->belongsTo(User::class, 'receiver_id');
+        }
+    }
+
+    
+
+    
+    public function sender()
+    {
+        return $this->belongsTo(User::class);
     }
 
 }

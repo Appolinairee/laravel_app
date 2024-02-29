@@ -19,6 +19,14 @@ class MessageStoreController extends Controller
     public function __invoke(MessageStoreRequest $request)
     {
         try {
+            if($request->receiver_type == "user" && !auth()->user()->creator){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Vous n\'êtes pas autorisé à faire cette action.',
+                ], 403);
+            }
+            
+            // si creator => creator
             
             if($request->type === 'image' && $request->hasFile('image')){
                 $content = $request->file('image')->store('messages', 'public');

@@ -5,12 +5,6 @@
 
 
 
-
-
-
-
-
-
 # creator is real creator when his status is 1: else he should attempt to admin verfication
 
 
@@ -18,7 +12,7 @@
 
 
 
-
+# new product should have status to check if it's valid or not. Notify admin
 
 
 

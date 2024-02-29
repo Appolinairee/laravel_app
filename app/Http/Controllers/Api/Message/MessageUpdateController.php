@@ -20,7 +20,7 @@ class MessageUpdateController extends Controller
      public function __invoke(MessageUpdateRequest $request, Message $message){
         try {
             $this->authorize('updateMessage', $message);
-
+            
             if($message->type !== 'text'){
                 return response()->json([
                     'status' => 'error',

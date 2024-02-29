@@ -48,4 +48,9 @@ class Creator extends Model
     public function orders(){
         return $this->hasMany(Order::class);
     }
+
+
+    public function messages(){
+        return $this->hasMany(Message::class, 'receiver_id')->where('receiver_type', "vendor");
+    }
 }

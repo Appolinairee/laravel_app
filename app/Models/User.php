@@ -70,4 +70,9 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    public function messages(){
+        return $this->hasMany(Message::class, 'sender_id')
+                ->orWhere('receiver_id', $this->id);
+    }
+
 }

@@ -30,8 +30,7 @@ class MessageStoreRequest extends FormRequest
             'type' => 'required|in:image,text',
             'text' => $this->input('type') === 'text' ? 'required|string' : '',
             'image' => $this->input('type') === 'image' ? 'required|image|mimes:jpeg,png,jpg,svg|max:2048' : '',
-            'receiver_type' => 'required|in:atoun,user,vendor',
-            'receiver_id' => $this->input('receiver_type') === 'vendor' ? 'required|exists:creators,id' : (($this->input('receiver_type') !== 'atoun')? 'required|exists:users,id' : 'required|in:0'),
+            'receiver_id' => 'required|exists:users,id',
         ];
     }
 

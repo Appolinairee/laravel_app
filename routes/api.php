@@ -85,13 +85,11 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::put('/{message}', [MessageUpdateController::class, '__invoke']);
         Route::delete('/{message}', [MessageController::class, 'delete']);
         Route::get('/user/{user}', [MessageController::class, 'messagesByUser']);
-        Route::get('/creator/{creator}', [MessageController::class, 'messagesByCreator']);
+        Route::get('/users', [MessageController::class, 'getUsersWithLastMessages']);
     });
 
 });
 
-// un utilisateur peut envoyer de message à {créateur, atoun}
-// un créateur peut envoyer de message à {user, atoun}
 
 /*
 |--------------------------------------------------------------------------

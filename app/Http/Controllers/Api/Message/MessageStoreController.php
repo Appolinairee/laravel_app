@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Message;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Message\MessageStoreRequest;
 use App\Models\Message;
+use App\Models\User;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 
@@ -19,14 +20,15 @@ class MessageStoreController extends Controller
     public function __invoke(MessageStoreRequest $request)
     {
         try {
-            if($request->receiver_type == "user" && !auth()->user()->creator){
+            $receiver = User::find($request->receiver_id);
+
+            if( (!$receiver->creator->id && !auth()->user()->id)){
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Vous n\'êtes pas autorisé à faire cette action.',
+                    'message' => 'Les Messages entre utilisateurs simples ne sont pas encore possibles.',
                 ], 403);
             }
             
-            // si creator => creator
             
             if($request->type === 'image' && $request->hasFile('image')){
                 $content = $request->file('image')->store('messages', 'public');
@@ -39,7 +41,6 @@ class MessageStoreController extends Controller
             $message = Message::create([
                 'content' => $content,
                 'type' => $request->type,
-                'receiver_type' => $request->receiver_type,
                 'receiver_id' => $request->receiver_id,
                 'sender_id' => auth()->user()->id
             ]);

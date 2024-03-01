@@ -53,26 +53,20 @@ class User extends Authenticatable
         return $this->hasOne(Creator::class);
     }
 
+
     /**
-     * verify if a user is Admin
+     * Check if a user has the 'admin' or 'moderator' role.
+     *
+     * @return bool
      */
     public function isAdmin()
     {
-        if($this->role === 'admin' || $this->role == 'moderator'){
-            return true;
-        }
-
-        return false;
+        return $this->role === 'admin' || $this->role === 'moderator';
     }
 
 
-    public function orders(){
+    public function orders()
+    {
         return $this->hasMany(Order::class);
     }
-
-    public function messages(){
-        return $this->hasMany(Message::class, 'sender_id')
-                ->orWhere('receiver_id', $this->id);
-    }
-
 }

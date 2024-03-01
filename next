@@ -1,6 +1,16 @@
-# messages
-    # get messages by user, by creator, by admin
+# interactions (likes, comments also called views)
 
+    <!-- comments or views -->
+    Route::post('/product/{post}/comments', [CommentController::class, 'store']);
+    Route::put('/comments/{comment}', [CommentController::class, 'update']);
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
+    Route::get('/products/{product}/comments', [CommentController::class, 'index']);
+
+    <!-- likes -->
+    Route::post('/product/{product}/likes', [LikeController::class, 'store']);
+    Route::delete('/likes/{like}', [LikeController::class, 'destroy']);
+    Route::get('/products/{product}/likes', [LikeController::class, 'index']);
+    Route::get('/users/{user}/likes', [LikeController::class, 'userLikes']);
 
 
 

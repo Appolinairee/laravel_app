@@ -20,5 +20,4 @@ class MessagePolicy
     {
         return ($user->id === $message->sender_id) || $user->isAdmin();
     }
-
 }

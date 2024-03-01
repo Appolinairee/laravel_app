@@ -115,6 +115,9 @@ order status is defined as tinyInteger
 
 
 
+## Interactions with Product
+
+
 
 ## Code of Conduct
 

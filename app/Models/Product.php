@@ -66,4 +66,10 @@ class Product extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+
+    public function interactions()
+    {
+        return $this->morphMany(Interaction::class, 'subject');
+    }
 }

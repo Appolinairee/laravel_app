@@ -71,6 +71,9 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/{product}/image', [MediasController::class, 'storeImage']);
         Route::post('/{product}/video', [MediasController::class, 'storeVideo']);
         Route::delete('/{product}/{media}', [MediasController::class, 'delete']);
+
+        // interactions
+        // Route::post('/products/{product}/comments', [::class, 'store']);
     });
 
 

@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\Product\StoreProductController;
 use App\Http\Controllers\Api\Product\UpdateProductController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Api\Product\CategoriesController;
+use App\Http\Controllers\Api\Product\CommentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -73,7 +74,8 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::delete('/{product}/{media}', [MediasController::class, 'delete']);
 
         // interactions
-        // Route::post('/products/{product}/comments', [::class, 'store']);
+        Route::post('/{product}/comments', [CommentController::class, 'store']);
+        
     });
 
 

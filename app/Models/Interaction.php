@@ -16,5 +16,32 @@ class Interaction extends Model
     {
         return $this->morphTo();
     }
+
+
+    public function interactable()
+    {
+        return $this->morphTo();
+    }
+
+    public function comments()
+    {
+        return $this->morphMany(Interaction::class, 'interactable');
+    }
+
+    public function likes()
+    {
+        return $this->comments()->where('interaction_type', 'like');
+    }
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     
+    // public function commentComments()
+    // {
+    //     return $this->comments()->where('interaction_type', 'comment');
+    // }
 }

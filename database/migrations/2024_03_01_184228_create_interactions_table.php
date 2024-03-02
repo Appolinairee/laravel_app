@@ -15,14 +15,15 @@ class CreateInteractionsTable extends Migration
     {
         Schema::create('interactions', function (Blueprint $table) {
             $table->id();
-            $table->string('type'); // like or comment
+            $table->string('type');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->unsignedBigInteger('subject_id');
-            $table->string('subject_type');
+            $table->unsignedBigInteger('entity_id');
+            $table->string('entity_type');
+            $table->text('content')->nullable();
             $table->softDeletes();
             $table->timestamps();
 
-            $table->index(['subject_id', 'subject_type']);
+            $table->index(['entity_id', 'entity_type']);
         });
     }
 

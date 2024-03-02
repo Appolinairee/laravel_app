@@ -41,7 +41,10 @@ class Order extends Model
     }
 
 
-
+    public function orders() {
+        return $this->hasMany(Order::class);
+    }
+    
     
     /**
      * Total currrent amount of order.

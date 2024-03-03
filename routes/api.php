@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->group(function(){
+Route::middleware('auth:sanctum')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
@@ -72,10 +72,13 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/{product}/image', [MediasController::class, 'storeImage']);
         Route::post('/{product}/video', [MediasController::class, 'storeVideo']);
         Route::delete('/{product}/{media}', [MediasController::class, 'delete']);
+    });
 
-        // interactions
-        Route::post('/{product}/comments', [CommentController::class, 'store']);
-        
+
+    Route::prefix('comments')->group(function () {
+        Route::post('/{product}', [CommentController::class, 'storeComment']);
+        Route::put('/{comment}', [CommentController::class, 'updateComment']);
+        Route::delete('/{comment}', [CommentController::class, 'deleteComment']);
     });
 
 
@@ -92,7 +95,6 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('/user/{user}', [MessageController::class, 'messagesByUser']);
         Route::get('/users', [MessageController::class, 'getUsersWithLastMessages']);
     });
-
 });
 
 
@@ -123,3 +125,12 @@ Route::get('products', [getProductController::class, 'getProducts']);
 Route::get('products/{product}', [getProductController::class, 'getProduct']);
 Route::get('products/creator/{creator}', [getProductController::class, 'getProductByCreator']);
 Route::get('products/category/{category}', [getProductController::class, 'getProductByCategory']);
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Public Interactions (about Product) Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('comments/{product}', [CommentController::class, 'getCommentsByProduct']);

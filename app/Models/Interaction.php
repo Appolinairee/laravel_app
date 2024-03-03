@@ -9,7 +9,7 @@ class Interaction extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['type', 'user_id', 'subject_id', 'subject_type'];
+    protected $fillable = ['type',  'content', 'user_id', 'entity_id', 'entity_type'];
 
 
     public function subject()

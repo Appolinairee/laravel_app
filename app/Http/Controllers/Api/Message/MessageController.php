@@ -72,12 +72,12 @@ class MessageController extends Controller
         $currentUser = auth()->user();
 
         $query = $this->getAllMessagesBetweenUsers($user, $currentUser);
-        
+
         $perPage = $request->get('perPage', 10);
 
         $messages = $query
-        ->orderBy('created_at', 'desc')
-        ->paginate($request->get('perPage', 10));
+            ->orderBy('created_at', 'desc')
+            ->paginate($request->get('perPage', 10));
 
         return $this->responseMessages($messages, 'User: Messages partégés avec l\'utilisateur.');
     }
@@ -85,25 +85,34 @@ class MessageController extends Controller
 
 
     /**
-     * Retrieve messages between the two users.
+     * Retrieve messages between two users.
      *
-     * @param  User  $user1 The user with whom messages are exchanged.
-     * @param  User  $user2 The user with whom messages are exchanged.
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @param  \App\Models\User  $user1 The first user.
+     * @param  \App\Models\User  $user2 The second user.
+     * @return \Illuminate\Http\JsonResponse
      */
     protected function getAllMessagesBetweenUsers(User $user1, User $user2)
     {
-        $messages =  Message::where(function ($query) use ($user1, $user2) {
-            $query->where('sender_id', $user1->id)
-                ->where('receiver_id', $user2->id);
-        })
-            ->orWhere(function ($query) use ($user1, $user2) {
-                $query->where('sender_id', $user2->id)
-                    ->where('receiver_id', $user1->id);
-            });
+        try {
+            $messages = Message::where(function ($query) use ($user1, $user2) {
+                $query->where('sender_id', $user1->id)
+                    ->where('receiver_id', $user2->id);
+            })
+                ->orWhere(function ($query) use ($user1, $user2) {
+                    $query->where('sender_id', $user2->id)
+                        ->where('receiver_id', $user1->id);
+                })
+                ->get();
 
-        return $messages;
+            return response()->json([
+                'status' => 'success',
+                'data' => $messages,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
     }
+
 
 
     /**
@@ -115,10 +124,19 @@ class MessageController extends Controller
      */
     protected function responseMessages($messages, $message)
     {
+        $userId = auth()->id();
+
+        $formattedMessages = $messages->map(function ($message) use ($userId) {
+            return array_merge(
+                $message->toArray(),
+                ['is_current_user' => $message->sender_id == $userId]
+            );
+        });
+
         return response()->json([
             'status' => 'success',
             'message' => $message,
-            'data' => $messages->items(),
+            'data' => $formattedMessages->items(),
             'pagination' => [
                 'nextUrl' => $messages->nextPageUrl(),
                 'prevUrl' => $messages->previousPageUrl(),
@@ -128,32 +146,49 @@ class MessageController extends Controller
     }
 
 
-
-
-
-
     /**
      * Get users with their last messages, excluding the current user.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getUsersWithLastMessages()
     {
-        return User::where('id', '!=', auth()->id())
-            ->whereHas('messages', function ($query) {
-                $query->where('sender_id', auth()->id())
-                    ->orWhere('receiver_id', auth()->id());
-            })
-            ->with('lastMessage.sender', 'lastMessage.receiver')
-            ->get();
+        try {
+
+            $userId = auth()->id();
+
+            $usersWithMessages = User::where('id', '!=', $userId)
+                ->with(['messages', 'receivedMessages'])
+                ->get();
+
+            $relevantUsersWithMessages = $usersWithMessages->map(function ($user) use ($userId) {
+                $allMessages = $user->messages->merge($user->receivedMessages);
+                $user->latest_message = $allMessages
+                    ->filter(function ($message) use ($userId) {
+                        $message['is_current_user'] = $message->sender_id == $userId;
+                        return in_array($message->sender_id, [$userId]) || in_array($message->receiver_id, [$userId]);
+                    })
+                    ->unique('id')
+                    ->sortByDesc('created_at')
+                    ->first();
+
+                return $user;
+            })->filter(function ($user) {
+                return !is_null($user->latest_message);
+            });
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $relevantUsersWithMessages,
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred while fetching users with last messages.',
+            ], 500);
+        }
     }
-
-
-
-
-
-
-
 
 
 

@@ -1,8 +1,6 @@
 # interactions (likes, comments also called views)
 
     <!-- comments or views -->
-    Route::post('/product/{post}/comments', [CommentController::class, 'store']);
-    Route::put('/comments/{comment}', [CommentController::class, 'update']);
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
     Route::get('/products/{product}/comments', [CommentController::class, 'index']);
 

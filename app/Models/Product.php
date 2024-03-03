@@ -78,12 +78,12 @@ class Product extends Model
 
     public function likes()
     {
-        return $this->interactions()->where('interaction_type', 'like');
+        return $this->interactions()->where('type', 'like');
     }
 
     
     public function comments()
     {
-        return $this->interactions()->where('interaction_type', 'comment');
+        return $this->interactions()->where('type', 'comment');
     }
 }

@@ -1,4 +1,9 @@
 # Mise en place des notifications: 
+    mise à jour de notification
+    get de notification par utilisateur
+    utilisation dans les autres méthodes
+
+# Notifications externes
 
 # Route::post('/wallet/withdraw', [WalletController::class, 'withdrawFunds']);
 

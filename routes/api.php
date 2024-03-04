@@ -100,6 +100,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/user/{user}', [MessageController::class, 'messagesByUser']);
         Route::get('/users', [MessageController::class, 'getUsersWithLastMessages']);
     });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | API Messages Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('notifications')->group(function () {
+        Route::get('/user/{user}', [NotificationController::class, 'getUserNotifications']);
+        Route::get('/product/{product}', [NotificationController::class, 'getProductNotifications']);
+    });
+
+
 });
 
 

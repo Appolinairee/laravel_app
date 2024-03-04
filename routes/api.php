@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\Message\MessageStoreController;
 use App\Http\Controllers\Api\Message\MessageUpdateController;
 use App\Http\Controllers\Api\Product\DeleteProductController;
 use App\Http\Controllers\Api\Product\getProductController;
+use App\Http\Controllers\Api\Product\LikeContoller;
 use App\Http\Controllers\Api\Product\MediasController;
 use App\Http\Controllers\Api\Product\StoreProductController;
 use App\Http\Controllers\Api\Product\UpdateProductController;
@@ -81,6 +82,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{comment}', [CommentController::class, 'deleteComment']);
     });
 
+    Route::prefix('likes')->group(function () {
+        Route::post('/{product}', [LikeContoller::class, 'storeLike']);
+    });
+
 
 
     /*
@@ -127,10 +132,10 @@ Route::get('products/creator/{creator}', [getProductController::class, 'getProdu
 Route::get('products/category/{category}', [getProductController::class, 'getProductByCategory']);
 
 
-
 /*
 |--------------------------------------------------------------------------
 | Public Interactions (about Product) Routes
 |--------------------------------------------------------------------------
 */
 Route::get('comments/{product}', [CommentController::class, 'getCommentsByProduct']);
+Route::get('likes/{product}', [LikeContoller::class, 'getLikesByProduct']);

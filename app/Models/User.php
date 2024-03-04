@@ -23,7 +23,9 @@ class User extends Authenticatable
         'password',
         'phone',
         'location',
-        'email_verified_at'
+        'email_verified_at',
+        'balance',
+        'affiliate_balance'
     ];
 
     /**
@@ -76,6 +78,7 @@ class User extends Authenticatable
     }
 
     public function receivedMessages()
+
     {
         return $this->hasMany(Message::class, 'receiver_id');
     }

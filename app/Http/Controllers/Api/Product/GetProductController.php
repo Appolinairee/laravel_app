@@ -78,7 +78,13 @@ class GetProductController extends Controller
 
             }
 
-            $productsArray = $selectedProducts->toArray();
+            $productsArray = $selectedProducts->map(function ($product) {
+                $product->likes_count = $product->likes()->count();
+                
+                $product->comments_count = $product->comments()->count();
+                return $product;
+            })->toArray();
+
 
             $offset = ($page - 1) * $perPage;
             $paginatedProducts = array_slice($productsArray, $offset, $perPage);

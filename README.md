@@ -117,6 +117,11 @@ order status is defined as tinyInteger
 
 ## Interactions with Product
 
+     getCommentsByProducts route is public route. We can't access to user_id by auth when it's connected. So, to verify if some comment is created by 
+     this user, we should specify it's id in params as request.
+
+     Same thing for like.
+
 
 
 ## Code of Conduct

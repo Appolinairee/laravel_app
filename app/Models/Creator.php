@@ -26,7 +26,8 @@ class Creator extends Model
         'delivery_options',
         'payment_options',
         'user_id',
-        'deleted_at'
+        'deleted_at',
+        'creator_balance'
     ];
 
     protected $casts = [

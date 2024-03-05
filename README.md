@@ -97,7 +97,7 @@ order status is defined as tinyInteger
 
 
 ## Message
-     Les messages sont carcatérisés: 
+     Les messages sont caractérisés par: 
      content => pour stocker soit du texte soit l'url de l'image
      type => image ou text
      receiver_type => user, vendor, admin
@@ -112,6 +112,9 @@ order status is defined as tinyInteger
      
      Delete Message
           Only message sender can delete message: soft delete
+
+     Gestion des messages relatifs aux admins
+          Si le receiver_id n'est pas précisé ou est 0, le message est destiné à AtounAfrica
 
 
 

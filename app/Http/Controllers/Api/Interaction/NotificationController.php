@@ -15,14 +15,13 @@ class NotificationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \App\Models\Notification
      */
-    public function postNotification(array $data)
+    public function store(array $data)
     {
         try {
             // Validate form data if necessary
-
             $notification = Notification::create([
+                'title' => $data['title'],
                 'content' => $data['content'],
-                'link' => $data['link'],
                 'user_id' => $data['user_id'],
                 'notifiable_id' => $data['notifiable_id'],
                 'notifiable_type' => $data['notifiable_type'],

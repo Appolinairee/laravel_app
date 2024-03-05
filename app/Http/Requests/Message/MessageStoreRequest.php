@@ -30,7 +30,7 @@ class MessageStoreRequest extends FormRequest
             'type' => 'required|in:image,text',
             'text' => $this->input('type') === 'text' ? 'required|string' : '',
             'image' => $this->input('type') === 'image' ? 'required|image|mimes:jpeg,png,jpg,svg|max:2048' : '',
-            'receiver_id' => 'required|exists:users,id',
+            'receiver_id' => 'sometimes|exists:users,id',
         ];
     }
 

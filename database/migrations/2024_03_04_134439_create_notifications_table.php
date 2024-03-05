@@ -15,9 +15,10 @@ class CreateNotificationsTable extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
             $table->text('content');
-            $table->string('state');
-            $table->string('link');
+            $table->string('state')->default(0);
+            $table->string('link')->nullable();
             $table->unsignedBigInteger('notifiable_id');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('notifiable_type');

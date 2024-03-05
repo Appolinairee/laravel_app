@@ -1,7 +1,27 @@
 # Mise en place des notifications: 
+    utilisation dans les autres méthodes
+        -commentaire sur un produit
+        -likes par bonds de 50
+        -Createur
+            -demande de création de compte créateur
+            -confirmation de la demande de devenir créateur => mail
+            -demande de publication de produit
+            -confimation de la publication => mail
+            -Paiements sur une commande du créateur => mail(paiement final) 
+            -Demande de livraison sur une commande payée
+            -Confirmation de réception
+            -Paiement => mail
+        -User
+            -confirmation de livraison et facturaction
+            -Paiement sur une commande => mail à chaque fois
+            -Paiement Affiliation
+            -Remboursement => mail
+
+
+            
+
     mise à jour de notification
     get de notification par utilisateur
-    utilisation dans les autres méthodes
 
 # Notifications externes
 
@@ -21,8 +41,7 @@
 
 
 
-
-
+Comment constituer le lien d'une notification
 
 
 

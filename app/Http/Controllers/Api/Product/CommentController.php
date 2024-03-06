@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Product;
 
+use App\Http\Controllers\Api\Interaction\NotificationController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Interaction\CommentStoreRequest;
 use App\Models\Interaction;
@@ -40,6 +41,18 @@ class CommentController extends Controller
                 ], 403);
             }
 
+            // push notification for creator
+            $notificationData  = [
+                'title' => "Un nouveau commentaire sur votre produit",
+                'content' => $request->input('content'),
+                'user_id' => $product->creator_id,
+                'notifiable_id' => $product->id,
+                'notifiable_type' => \App\Models\Product::class,
+            ];
+
+            (new NotificationController)->store($notificationData);
+
+            
             $comment = Interaction::create([
                 'type' => 'comment',
                 'user_id' => auth()->id(),

@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Api\Order;
 
+use App\Http\Controllers\Api\Interaction\NotificationController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\PaymentUpdateRequest;
 use App\Models\Contribution;
 use App\Models\Order;
+use App\Models\User;
+use App\Notifications\GeneralNotification;
+use App\Notifications\NewCreatorNotification;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -136,6 +140,75 @@ class PaymentController extends Controller
         }   catch (Exception $e) {
             return response()->json($e);
         }
+    }
+
+    private function notifyForPayment($creator, $user, $order){
+        // intern notifications
+
+        $admins = User::where('role', 'admin')->get();
+
+        foreach ($admins as $admin) {
+            $notificationData  = [
+                'title' => "Paiment effectué.",
+                'content' => "$user->name vient de solder pour une commande.",
+                'user_id' => $admin->id,
+                'notifiable_id' => $order->id,
+                'notifiable_type' => \App\Models\Order::class,
+            ];
+
+            (new NotificationController)->store($notificationData);
+
+
+            // extern notification
+            $data = [
+                'subject' => 'Un paiment effectué avec succès.',
+                'greeting' => $admin->name,
+                'message' => "$user->name vient de solder pour une commande. Veuillez faire les configurations et les vérifications nécessaire!",
+                'actionText' => 'Voir la commande',
+                'actionUrl' => '',
+            ];
+
+            $admin->notify(new GeneralNotification($data));
+        }
+
+        $notificationData  = [
+            'title' => "Paiment effectué.",
+            'content' => "$user->name vient de solder pour une commande.",
+            'user_id' => $creator->id,
+            'notifiable_id' => $order->id,
+            'notifiable_type' => \App\Models\Order::class,
+        ];
+
+        (new NotificationController)->store($notificationData);
+
+        // extern notification
+        $data = [
+            'subject' => 'Un paiment effectué avec succès.',
+            'greeting' => $admin->name,
+            'message' => "$user->name vient de solder pour une commande. Veuillez faire les configurations et les vérifications nécessaire!",
+            'actionText' => 'Voir la commande',
+            'actionUrl' => '',
+        ];
+
+        $admin->notify(new GeneralNotification($data));
+    }
+
+    private function notifyForContribution($creator, $user, $order){
+        // intern notifications
+        $admins = User::where('role', 'admin')->get();
+
+        foreach ($admins as $admin) {
+            $notificationData  = [
+                'title' => "Paiment effectué.",
+                'content' => "Demande de création de compte vendeur par $creator->name.",
+                'user_id' => $admin->id,
+                'notifiable_id' => $creator->id,
+                'notifiable_type' => \App\Models\Creator::class,
+            ];
+
+            (new NotificationController)->store($notificationData);
+        }
+
     }
 
 

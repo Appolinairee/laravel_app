@@ -1,13 +1,7 @@
 # Mise en place des notifications: 
     utilisation dans les autres méthodes
-        -commentaire sur un produit
-        -likes par bonds de 50
         -Createur
-            -demande de création de compte créateur
-            -confirmation de la demande de devenir créateur => mail
-            -demande de publication de produit
-            -confimation de la publication => mail
-            -Paiements sur une commande du créateur => mail(paiement final) 
+            -Paiements sur une commande du créateur => mail(paiement final) (à compléter)
             -Demande de livraison sur une commande payée
             -Confirmation de réception
             -Paiement => mail
@@ -48,6 +42,8 @@ Comment constituer le lien d'une notification
 
 ## Let's think this
 
+# Incopore front route for notification's link and for mail url
+
 # demande de remboursement par les utilisateurs.
 # confirmation de rembourement par les admins   
 
@@ -68,3 +64,7 @@ Comment constituer le lien d'une notification
 # admin should really access the data in every trash also
 
 # improve similar products
+
+
+# Notification: confirmation de la demande de devenir créateur => mail
+# Notification: -confimation de la publication => mail

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Product;
 
+use App\Http\Controllers\Api\Interaction\NotificationController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Models\Category;
@@ -22,6 +23,7 @@ class StoreProductController extends Controller
                 // notifications for admins
                 $admins = User::where('role', 'admin')->get();
                 foreach ($admins as $admin) {
+                    // extern notification by mail
                     $data = [
                         'subject' => 'Un nouveau produit MIA!',
                         'greeting' => $admin->name,
@@ -70,7 +72,22 @@ class StoreProductController extends Controller
                         'statut' => 'inactive'
                     ]);
                 }
-    
+
+                // intern notification for admins
+                foreach ($admins as $admin) {
+
+                    $notificationData  = [
+                        'title' => "Un nouveau produit.",
+                        'content' => "Le créateur $creator->name a publié un nouveau produit.",
+                        'user_id' => $admin->id,
+                        'notifiable_id' => $product->id,
+                        'notifiable_type' => \App\Models\Product::class,
+                    ];
+        
+                    (new NotificationController)->store($notificationData);
+                }
+
+                
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Votre produit a été ajouté avec succès. AtounAfrica s\'empresse de le confirmer.',

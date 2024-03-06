@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Product;
 
+use App\Http\Controllers\Api\Interaction\NotificationController;
 use App\Http\Controllers\Controller;
 use App\Models\Interaction;
 use App\Models\Product;
@@ -29,7 +30,8 @@ class LikeContoller extends Controller
                 ->where('type', 'like')
                 ->first();
 
-            if($existingLike){
+
+            if ($existingLike) {
                 $existingLike->forceDelete();
 
                 return response()->json([
@@ -39,11 +41,24 @@ class LikeContoller extends Controller
                 ], 201);
             }
 
+            if (($product->likes()->count() % 50) === 0) {
+                // Sending a notification to the creator for every 50-like milestone
+                $notificationData  = [
+                    'title' => "+50 likes pour votre produit.",
+                    'content' => "Votre produit @".$product->title . '@ a été $product->likes()->count() likes.',
+                    'user_id' => $product->creator_id,
+                    'notifiable_id' => $product->id,
+                    'notifiable_type' => \App\Models\Product::class,
+                ];
+
+                (new NotificationController)->store($notificationData);
+            }
+
             $like = Interaction::create([
                 'type' => 'like',
                 'user_id' => auth()->id(),
                 'entity_id' => $product->id,
-                    'entity_type' => Product::class,
+                'entity_type' => Product::class,
             ]);
 
             $like->load('user');
@@ -53,7 +68,6 @@ class LikeContoller extends Controller
                 'message' => 'Like ajouté avec succès',
                 'data' => $like,
             ], 201);
-
         } catch (Exception $e) {
             return response()->json($e);
         }
@@ -94,7 +108,6 @@ class LikeContoller extends Controller
                     'total' => $likes->total(),
                 ],
             ], 200);
-
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',

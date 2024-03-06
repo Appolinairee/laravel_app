@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Api\Creator;
+
+use App\Http\Controllers\Api\Interaction\NotificationController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\StoreCreatorRequest;
 use App\Models\Creator;
@@ -21,7 +23,7 @@ class StoreCreatorController extends Controller
     {
         try {
 
-            if(!auth()->user()->creator){
+            if (!auth()->user()->creator) {
 
                 // store logo first
                 if ($request->hasFile('logo')) {
@@ -32,12 +34,12 @@ class StoreCreatorController extends Controller
 
                 // notifications for admins
                 $admins = User::where('role', 'admin')->get();
-    
+
                 foreach ($admins as $admin) {
                     $admin->notify(new NewCreatorNotification($request->name));
                 }
 
-                
+
                 $creator = Creator::create([
                     'name' => $request->name,
                     'phone' => $request->phone,
@@ -49,21 +51,52 @@ class StoreCreatorController extends Controller
                     'payment_options' =>  $request->payment_options,
                     'user_id' => auth()->user()->id
                 ]);
-        
+
+                // send notifications 
+                $this->notifyAdminsAndCreator($admins, $creator);
+
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Votre requête pour devenir créateur sur AtounAfrica est pris en compte.',
                     'data' => $creator
                 ], 201);
-            }else {
+                
+            } else {
                 return response()->json([
                     'status' => 'false',
                     'message' => 'Vous êtes déjà créateur.',
                 ], 403);
             }
-
         } catch (Exception $e) {
             return response()->json($e);
         }
+    }
+
+
+    private function notifyAdminsAndCreator($admins, $creator)
+    {
+
+        foreach ($admins as $admin) {
+            $notificationData  = [
+                'title' => "Un nouveau créateur MIA.",
+                'content' => "Demande de création de compte vendeur par $creator->name.",
+                'user_id' => $admin->id,
+                'notifiable_id' => $creator->id,
+                'notifiable_type' => \App\Models\Creator::class,
+            ];
+
+            (new NotificationController)->store($notificationData);
+        }
+
+        $notificationData  = [
+            'title' => "Demande acceptée.",
+            'content' => "Nous répondons généralement dans les heures qui suivent.",
+            'user_id' => $creator->user->id,
+            'notifiable_id' => $creator->id,
+            'notifiable_type' => \App\Models\Creator::class,
+        ];
+
+        (new NotificationController)->store($notificationData);
+
     }
 }

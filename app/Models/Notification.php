@@ -17,6 +17,6 @@ class Notification extends Model
 
     public function notificationEntity()
     {
-        return $this->morphTo();
+        return $this->morphTo(null, 'notifiable_type', 'notifiable_id');
     }
 }

@@ -1,33 +1,6 @@
-# Mise en place des notifications: 
-    utilisation dans les autres méthodes
-        -Createur
-            -Paiements sur une commande du créateur => mail(paiement final) (à compléter)
-            -Demande de livraison sur une commande payée
-            -Confirmation de réception
-            -Paiement => mail
-        -User
-            -confirmation de livraison et facturaction
-            -Paiement sur une commande => mail à chaque fois
-            -Paiement Affiliation
-            -Remboursement => mail
-
-
-            
-
-    mise à jour de notification
-    get de notification par utilisateur
-
 # Notifications externes
-
 # Route::post('/wallet/withdraw', [WalletController::class, 'withdrawFunds']);
-
-
-
-
 # creator is real creator when his status is 1: else he should attempt to admin verfication
-
-
-
 
 
 
@@ -35,12 +8,16 @@
 
 
 
-Comment constituer le lien d'une notification
+# Comment constituer le lien d'une notification
 
 
 
 
 ## Let's think this
+
+# -Paiements sur une commande du créateur => mail(paiement final) 
+    Revoir les notifications envoyées et bien les formuler
+
 
 # Incopore front route for notification's link and for mail url
 
@@ -68,3 +45,16 @@ Comment constituer le lien d'une notification
 
 # Notification: confirmation de la demande de devenir créateur => mail
 # Notification: -confimation de la publication => mail
+
+
+# Mise en place des notifications: 
+    utilisation dans les autres méthodes
+        -Createur
+            -Demande de livraison sur une commande payée
+            -Confirmation de réception
+            -Paiement => mail
+        -User
+            -confirmation de livraison et facturaction
+            -Paiement sur une commande => mail à chaque fois
+            -Paiement Affiliation
+            -Remboursement => mail

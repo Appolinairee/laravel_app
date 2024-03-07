@@ -22,7 +22,8 @@ class PaymentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(PaymentUpdateRequest $request, Order $order){
+    public function update(PaymentUpdateRequest $request, Order $order)
+    {
         try {
             $this->authorize('storeInExistingOrder', $order);
 
@@ -36,37 +37,39 @@ class PaymentController extends Controller
             }
 
             // verify order status
-            if($order->status !== 0 && $order->status !== 1){
+            if ($order->status !== 0 && $order->status !== 1) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Le statut de la commande doit être 0 ou 1 pour le paiement.',
                 ], 403);
-            } 
+            }
 
-            if($request->payment_type === 1){
-                if($request->amount_paid < $order->total_amount){
+            if ($request->payment_type === 1) {
+                if ($request->amount_paid < $order->total_amount) {
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Somme insuffisante pour le paiement en bloc de cette commande: '.$order->total_amount,
+                        'message' => 'Somme insuffisante pour le paiement en bloc de cette commande: ' . $order->total_amount,
                     ], 403);
                 }
-                
+
                 //update total amount (to fix it)
                 $order->update(['total_amount' => $order->calculateTotalAmount()]);
 
-                if($order->total_amount < $request->amount_paid){
+                if ($order->total_amount < $request->amount_paid) {
                     return response()->json([
                         'status' => 'error',
                         'message' => 'Une erreur est survenue. Montant supérieure à celuide la commande.'
                     ], 403);
                 }
 
-                $order->update(['amount_paid' => $request->amount_paid]); 
-                $order->update(['payment_type' => $request->payment_type]); 
+                $order->update(['amount_paid' => $request->amount_paid]);
+                $order->update(['payment_type' => $request->payment_type]);
 
 
                 $order->update(['payment_status' => 1]); //paid status
                 $order->update(['status' => 2]); //delievering status
+
+                $this->notifyForPayment($order->creator, auth()->user(), $order);
 
                 return response()->json([
                     'status' => 'success',
@@ -77,10 +80,10 @@ class PaymentController extends Controller
 
             $contributionMinimum = 5000; //FCFA
 
-            if($request->payment_type === 0 && $request->amount_paid < 5000){
+            if ($request->payment_type === 0 && $request->amount_paid < 5000) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Montant de cotisation insuffisante. Le minimum est de '.$contributionMinimum,
+                    'message' => 'Montant de cotisation insuffisante. Le minimum est de ' . $contributionMinimum,
                 ], 403);
             }
 
@@ -88,7 +91,7 @@ class PaymentController extends Controller
             //update total amount (to fix it)
             $order->update(['total_amount' => $order->calculateTotalAmount()]);
 
-            if($order->total_amount < $request->amount_paid){
+            if ($order->total_amount < $request->amount_paid) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Une erreur est survenue. Montant supérieur à celuide la commande.'
@@ -96,7 +99,7 @@ class PaymentController extends Controller
             }
 
             $order->update(['payment_type' => $request->payment_type]);
-            $order->update(['amount_paid' => $request->amount_paid + $order->amount_paid]); 
+            $order->update(['amount_paid' => $request->amount_paid + $order->amount_paid]);
 
             $order->update(['payment_status' => 0]); // in payment status
             $order->update(['status' => 1]); //payment order status
@@ -108,9 +111,11 @@ class PaymentController extends Controller
             ]);
 
             // verify if is total level of contribution
-            if($order->amount_paid >= $order->total_amount){
+            if ($order->amount_paid >= $order->total_amount) {
                 $order->update(['payment_status' => 1]); //paid status
                 $order->update(['status' => 2]); //delievering status
+
+                $this->notifyForPayment($order->creator, auth()->user(), $order);
 
                 return response()->json([
                     'status' => 'success',
@@ -122,6 +127,9 @@ class PaymentController extends Controller
                 ], 200);
             }
 
+
+            $this->notifyForPayment($order->creator, auth()->user(), $order);
+
             return response()->json([
                 'status' => 'success',
                 'message' => "Cotisation ajoutée avec succès.",
@@ -130,86 +138,76 @@ class PaymentController extends Controller
                     'contributions' => $order->contributions
                 ]
             ], 200);
-
-        }catch (AuthorizationException $e) {
+        } catch (AuthorizationException $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Vous n\'êtes pas autorisé à faire cette action.',
             ], 403);
-
-        }   catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json($e);
         }
     }
 
-    private function notifyForPayment($creator, $user, $order){
-        // intern notifications
 
-        $admins = User::where('role', 'admin')->get();
+    private function InternNotificationUnit($receiver_id, $user, $order)
+    {
 
-        foreach ($admins as $admin) {
-            $notificationData  = [
-                'title' => "Paiment effectué.",
-                'content' => "$user->name vient de solder pour une commande.",
-                'user_id' => $admin->id,
-                'notifiable_id' => $order->id,
-                'notifiable_type' => \App\Models\Order::class,
-            ];
-
-            (new NotificationController)->store($notificationData);
-
-
-            // extern notification
-            $data = [
-                'subject' => 'Un paiment effectué avec succès.',
-                'greeting' => $admin->name,
-                'message' => "$user->name vient de solder pour une commande. Veuillez faire les configurations et les vérifications nécessaire!",
-                'actionText' => 'Voir la commande',
-                'actionUrl' => '',
-            ];
-
-            $admin->notify(new GeneralNotification($data));
-        }
+        if ($receiver_id == $user->id)
+            $message =  "Vous avez payé pour l'une de vos commandes. Veuillez lancer la configuration!";
+        else
+            $message = "$user->name vient de solder pour une commande.";
 
         $notificationData  = [
             'title' => "Paiment effectué.",
-            'content' => "$user->name vient de solder pour une commande.",
-            'user_id' => $creator->id,
+            'content' =>  $message,
+            'user_id' => $receiver_id,
             'notifiable_id' => $order->id,
             'notifiable_type' => \App\Models\Order::class,
         ];
 
         (new NotificationController)->store($notificationData);
+    }
+
+
+    private function ExternNotificationUnit($receiver, $user)
+    {
+
+        if ($receiver->id == $user->id)
+            $message =  "Vous avez payé pour l'une de vos commandes.!";
+        else
+            $message = "$user->name vient de solder pour une commande. Veuillez faire les configurations nécessaires!";
 
         // extern notification
         $data = [
             'subject' => 'Un paiment effectué avec succès.',
-            'greeting' => $admin->name,
-            'message' => "$user->name vient de solder pour une commande. Veuillez faire les configurations et les vérifications nécessaire!",
+            'greeting' => $receiver->name,
+            'message' => $message,
             'actionText' => 'Voir la commande',
             'actionUrl' => '',
         ];
 
-        $admin->notify(new GeneralNotification($data));
+        $receiver->notify(new GeneralNotification($data));
     }
 
-    private function notifyForContribution($creator, $user, $order){
+    private function notifyForPayment($creator, $user, $order)
+    {
         // intern notifications
+
         $admins = User::where('role', 'admin')->get();
 
         foreach ($admins as $admin) {
-            $notificationData  = [
-                'title' => "Paiment effectué.",
-                'content' => "Demande de création de compte vendeur par $creator->name.",
-                'user_id' => $admin->id,
-                'notifiable_id' => $creator->id,
-                'notifiable_type' => \App\Models\Creator::class,
-            ];
 
-            (new NotificationController)->store($notificationData);
+            $this->InternNotificationUnit($admin->id, $user, $order);
+
+            $this->ExternNotificationUnit($admin, $user);
         }
 
+        // creator
+        $this->InternNotificationUnit($creator->id, $user, $order);
+        $this->ExternNotificationUnit($creator, $user);
+
+        // user
+        $this->InternNotificationUnit($user->id, $user, $order);
+        $this->ExternNotificationUnit($user, $user);
     }
-
-
 }

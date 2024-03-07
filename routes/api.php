@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Creator\DeleteLogoController;
 use App\Http\Controllers\Api\Creator\GetCreatorController;
 use App\Http\Controllers\Api\Creator\storeCreatorController;
 use App\Http\Controllers\Api\Creator\UpdateCreatorController;
+use App\Http\Controllers\Api\Interaction\NotificationController;
 use App\Http\Controllers\Api\Message\MessageController;
 use App\Http\Controllers\Api\Message\MessageStoreController;
 use App\Http\Controllers\Api\Message\MessageUpdateController;
@@ -108,10 +109,9 @@ Route::middleware('auth:sanctum')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::prefix('notifications')->group(function () {
-        Route::get('/user/{user}', [NotificationController::class, 'getUserNotifications']);
-        Route::get('/product/{product}', [NotificationController::class, 'getProductNotifications']);
+        Route::get('', [NotificationController::class, 'getUserNotifications']);
+        Route::put('/{notification}', [NotificationController::class, 'updateNotificationState']);
     });
-
 
 });
 

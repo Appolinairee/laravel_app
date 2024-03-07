@@ -1,14 +1,18 @@
+# request to restore account: from user only :: post user/restore  ::: admin
+# admin should really access the data in every trash also
+# confirmation de rembourement par les admins   
+# only active products should be returned
+
+
+# demande de remboursement par les utilisateurs.
+
+
+
+
 # Notifications externes
 # Route::post('/wallet/withdraw', [WalletController::class, 'withdrawFunds']);
-# creator is real creator when his status is 1: else he should attempt to admin verfication
-
-
-
-# new product should have status to check if it's valid or not. Notify admin
-
-
-
 # Comment constituer le lien d'une notification
+# Incopore front route for notification's link and for mail url
 
 
 
@@ -18,27 +22,11 @@
 # -Paiements sur une commande du créateur => mail(paiement final) 
     Revoir les notifications envoyées et bien les formuler
 
-
-# Incopore front route for notification's link and for mail url
-
-# demande de remboursement par les utilisateurs.
-# confirmation de rembourement par les admins   
-
-# request to restore account: from user only :: post user/restore  ::: admin
-# restore user route ::: admin
-#  admin only can restore account
 # style welcome notification and other notifications
 # Day format, date should be format in api directly
 
-# message and notify admins for creating creator and product: for its authentification
-# admins should made creator status to 1
-
-
-# how to send json format? We want to store json attrribut (such as caracteristics, delievering, ...) as text, should api receive json to transform to text, or the client should format json to text before send it?
 
 # Système de Recommandation Simple: on se base sur les métadonnées pour proposer au client des produits
-
-# admin should really access the data in every trash also
 
 # improve similar products
 

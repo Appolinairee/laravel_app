@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddStatuscolumnsToProducts extends Migration
+class AddStateColumnToProducts extends Migration
 {
     /**
      * Run the migrations.

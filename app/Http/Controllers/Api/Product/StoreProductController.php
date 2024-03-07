@@ -82,6 +82,7 @@ class StoreProductController extends Controller
                         'user_id' => $admin->id,
                         'notifiable_id' => $product->id,
                         'notifiable_type' => \App\Models\Product::class,
+                        'status' => 0
                     ];
         
                     (new NotificationController)->store($notificationData);

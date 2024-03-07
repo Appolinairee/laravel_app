@@ -20,6 +20,7 @@ class Creator extends Model
         'name',
         'phone',
         'email',
+        'status',
         'logo',
         'description',
         'location',

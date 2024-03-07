@@ -45,6 +45,7 @@ class StoreCreatorController extends Controller
                     'phone' => $request->phone,
                     'email' => $request->email,
                     'logo' => $logoPath,
+                    'status' => 0,
                     'description' => $request->description,
                     'location' => $request->location,
                     'delivery_options' => $request->delivery_options,

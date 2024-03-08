@@ -24,4 +24,5 @@ class UserPolicy
     {
         return auth()->user()->role === 'admin' || auth()->user()->role === 'moderator';
     }
+
 }

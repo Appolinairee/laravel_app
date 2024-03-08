@@ -21,8 +21,10 @@ class ProductAdminUpdate extends Controller
     {
         try {
 
+            $newStatus = $product->status == 1 ? 0 : 1;
+
             $product->update([
-                "status" => 1
+                "status" => $newStatus
             ]);
 
             return response()->json([

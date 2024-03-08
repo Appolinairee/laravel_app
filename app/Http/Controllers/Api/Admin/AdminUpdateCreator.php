@@ -21,8 +21,10 @@ class AdminUpdateCreator extends Controller
     {
         try {
 
+            $newStatus = $creator->status == 1 ? 0 : 1;
+
             $creator->update([
-                "status" => 1
+                "status" => $newStatus
             ]);
 
             return response()->json([

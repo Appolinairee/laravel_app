@@ -1,8 +1,8 @@
-# request to restore account: from user only :: post user/restore  ::: admin
 # admin should really access the data in every trash also
 # confirmation de rembourement par les admins   
 # only active products should be returned
 
+# how know that user have sended request to restore account. How to block many restore resquest from same email.
 
 # demande de remboursement par les utilisateurs.
 

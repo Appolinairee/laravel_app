@@ -1,6 +1,10 @@
 # admin should really access the data in every trash also
+    return order_items or order in trash
+    retun messages in trash
+
+# only active products and creators should be returned
+
 # confirmation de rembourement par les admins   
-# only active products should be returned
 
 # how know that user have sended request to restore account. How to block many restore resquest from same email.
 

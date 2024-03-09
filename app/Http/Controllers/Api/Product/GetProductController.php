@@ -184,5 +184,27 @@ class GetProductController extends Controller
         }
     }
 
+
+    public function getProductsInTrash(Request $request){
+        try {
+            $perPage = $request->get('perPage', 15);
+
+            $products = Product::onlyTrashed()->paginate($perPage);
+        
+            return response()->json([
+                'status' => 'success',
+                'current_page' => $products->currentPage(),
+                'data' => $products->items(),
+                'pagination' => [
+                    'nextUrl' => $products->nextPageUrl(),
+                    'prevUrl' => $products->previousPageUrl(),
+                    'total' => $products->total(),
+                ],
+            ], 200); 
+
+        }catch (Exception $e) {
+            return response()->json($e);
+        }
+    }
     
 }

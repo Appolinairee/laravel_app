@@ -9,6 +9,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -129,5 +130,28 @@ class UserController extends Controller
         
         $mailIsSendMessage = " Changement d'adresse mail. Un mail a été envoyé. L'utilisateur a été déconnecté.";
         return $mailIsSendMessage;
+    }
+
+
+    public function getUsersInTrash(Request $request){
+        try {
+            $perPage = $request->get('perPage', 15);
+
+            $users = User::onlyTrashed()->paginate($perPage);
+        
+            return response()->json([
+                'status' => 'success',
+                'current_page' => $users->currentPage(),
+                'data' => $users->items(),
+                'pagination' => [
+                    'nextUrl' => $users->nextPageUrl(),
+                    'prevUrl' => $users->previousPageUrl(),
+                    'total' => $users->total(),
+                ],
+            ], 200); 
+
+        }catch (Exception $e) {
+            return response()->json($e);
+        }
     }
 }

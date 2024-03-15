@@ -6,9 +6,10 @@ use App\Rules\notInTrash;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
 
-class RegisterRequest extends FormRequest
-{
+
+class RegisterRequest extends FormRequest{
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -45,6 +46,6 @@ class RegisterRequest extends FormRequest
             'error' => true,
             'message' => 'Erreur de validation',
             'errorsList' => $validator->errors()
-        ]));
+        ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

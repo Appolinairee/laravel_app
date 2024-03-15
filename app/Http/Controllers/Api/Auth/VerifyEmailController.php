@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Notifications\WelcomeNotification;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class VerifyEmailController extends Controller
@@ -43,10 +44,30 @@ class VerifyEmailController extends Controller
 
                 $user->notify(new WelcomeNotification);
 
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Le mail de l\'utilisateur est vérifié',
-                ], 200);
+                Auth::loginUsingId($user['id']);
+
+                if (Auth::check()) {
+                    $token = $user->createToken(env('BACKEND_KEY'))->plainTextToken;
+                    
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Utilisateur connecté',
+                        'data' => [
+                            'user' => $user,
+                            'token' => $token
+                        ]
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Échec de l\'authentification',
+                    ], 401);
+                }
+
+                // return response()->json([
+                //     'status' => 'success',
+                //     'message' => 'Le mail de l\'utilisateur est vérifié',
+                // ], 200);
             }else {
                 return response()->json([
                     'status' => 'failure',

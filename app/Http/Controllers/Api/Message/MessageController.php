@@ -3,14 +3,11 @@
 namespace App\Http\Controllers\Api\Message;
 
 use App\Http\Controllers\Controller;
-use App\Models\Creator;
 use App\Models\Message;
 use App\Models\User;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class MessageController extends Controller
 {
@@ -50,11 +47,14 @@ class MessageController extends Controller
 
     protected function adminMessagesByUser(User $user, Request $request)
     {
-        $messages = Message::where('sender_id', $user->id)
+        $perPage = $request->get('perPage', 10);
+
+        $messages = Message::withTrashed()->where('sender_id', $user->id)
             ->orWhere('receiver_id', $user->id)
             ->orderBy('created_at', 'desc')
-            ->paginate($request->get('perPage', 10));
-
+            ->paginate($perPage);
+        
+        
         return $this->responseMessages($messages, 'Admin: Messages for the user.');
     }
 
@@ -70,14 +70,12 @@ class MessageController extends Controller
     protected function userMessagesByUser(User $user, Request $request)
     {
         $currentUser = auth()->user();
-
         $query = $this->getAllMessagesBetweenUsers($user, $currentUser);
-
         $perPage = $request->get('perPage', 10);
 
         $messages = $query
             ->orderBy('created_at', 'desc')
-            ->paginate($request->get('perPage', 10));
+            ->paginate($perPage);
 
         return $this->responseMessages($messages, 'User: Messages partégés avec l\'utilisateur.');
     }
@@ -104,10 +102,7 @@ class MessageController extends Controller
                 })
                 ->get();
 
-            return response()->json([
-                'status' => 'success',
-                'data' => $messages,
-            ], 200);
+            return $messages;
         } catch (Exception $e) {
             return response()->json($e);
         }
@@ -136,7 +131,7 @@ class MessageController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => $message,
-            'data' => $formattedMessages->items(),
+            'data' => $formattedMessages,
             'pagination' => [
                 'nextUrl' => $messages->nextPageUrl(),
                 'prevUrl' => $messages->previousPageUrl(),
@@ -181,7 +176,6 @@ class MessageController extends Controller
                 'status' => 'success',
                 'data' => $relevantUsersWithMessages,
             ], 200);
-
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',

@@ -1,6 +1,6 @@
 # admin should really access the data in every trash also
     return order_items or order in trash
-    retun messages in trash
+    return messages in trash
 
 # only active products and creators should be returned
 

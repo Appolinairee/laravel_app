@@ -23,7 +23,7 @@ class RegisterController extends Controller
     {
         try {
             Mail::to($request->email)->send(new VerifyEmailMail($request->name, $request->email));
-            
+
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,

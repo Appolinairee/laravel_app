@@ -13,9 +13,15 @@ use Illuminate\Support\Facades\Mail;
 
 class VerifyEmailController extends Controller
 {
-    public function sendLink (){
+    public function sendLink (Request $request){
         try {
-            Mail::to(auth()->user()->email)->send(new VerifyEmailMail(auth()->user()));
+            $data = $request->validate([
+                'email' => 'required|email|exists:users,email'
+            ]);
+
+            $user = User::where('email', $data['email'])->first();
+
+            Mail::to($data['email'])->send(new VerifyEmailMail($user->name, $data['email']));
         
             return response()->json([
                 'status' => 'success',

@@ -24,11 +24,11 @@ Route::middleware('guest')->group(function () {
 
     Route::post('email/verify', [VerifyEmailController::class, 'verifyEmail'])->middleware('signed')->name('email.verify');
     Route::post('/restoreRequest', [RestoreUserController::class, 'restoreRequest']);
+    Route::post('email/send', [VerifyEmailController::class, 'sendLink']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [LogoutController::class, '__invoke']);
-    Route::post('email/send', [VerifyEmailController::class, 'sendLink']);
     Route::delete('/{user}', [DeleteUserController::class, '__invoke']);
     Route::put('/restore/{user}', [RestoreUserController::class, 'restore']);
 });

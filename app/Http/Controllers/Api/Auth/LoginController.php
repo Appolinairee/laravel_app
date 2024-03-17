@@ -38,7 +38,7 @@ class LoginController extends Controller
                     return response()->json([
                         'status' => 'error',
                         'message' => 'Échec de l\'authentification.',
-                        'errors' => 'Adresse mail non encore vérifiée.'
+                        'errors' => 'Veuillez confirmez votre adresse email. Un message vous a été envoyé.'
                     ], 404);
                 }
 
@@ -51,14 +51,14 @@ class LoginController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Authentification interdite',
-                    'errors' => 'Le compte a été supprimé. L\'utilisateur doit prendre des mesures appropriées'
+                    'errors' => 'Le compte a été supprimé. Veuillez faire une requête de restauration.'
                 ], 403);
             }
             
             return response()->json([
                 'status' => 'error',
                 'message' => 'Échec de l\'authentification',
-                'errors' => 'Identifiants invalides'
+                'errors' => 'Adresse Email ou mot de passe incorrect!'
             ], 404);
 
         } catch (Exception $e) {

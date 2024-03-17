@@ -1,52 +1,42 @@
+### Let's think this
+
+# only active products and creators should be 
+
+# demande de remboursement par les utilisateurs.
+
+# Route::post('/wallet/withdraw', [WalletController::class, 'withdrawFunds']);
+
+# Incopore front route for notification's link and for mail url
+    # Comment constituer le lien d'une notification 
+
+# -Paiements sur une commande du créateur => mail(paiement final) 
+
+# Système de Recommandation Simple: on se base sur les métadonnées pour proposer au client des produits
+    # improve similar products
+
+# Mise en place des notifications:
+    -Createur
+        -confirmation de la demande de devenir créateur => mail
+        -Demande de livraison sur une commande payée
+        -Confirmation de réception
+        -confimation de la publication => mail
+        -Paiement => mail
+    -User
+        -confirmation de livraison et facturaction
+        -Paiement sur une commande => mail à chaque fois
+        -Paiement Affiliation
+        -Remboursement => mail
+
+
+Admins
+
+# confirmation de rembourement par les admins   
+
 # admin should really access the data in every trash also
     return order_items or order in trash
     return messages in trash
 
-# only active products and creators should be returned
-
-# confirmation de rembourement par les admins   
-
 # how know that user have sended request to restore account. How to block many restore resquest from same email.
 
-# demande de remboursement par les utilisateurs.
-
-
-
-
-# Notifications externes
-# Route::post('/wallet/withdraw', [WalletController::class, 'withdrawFunds']);
-# Comment constituer le lien d'une notification
-# Incopore front route for notification's link and for mail url
-
-
-
-
-## Let's think this
-
-# -Paiements sur une commande du créateur => mail(paiement final) 
-    Revoir les notifications envoyées et bien les formuler
-
-# style welcome notification and other notifications
-# Day format, date should be format in api directly
-
-
-# Système de Recommandation Simple: on se base sur les métadonnées pour proposer au client des produits
-
-# improve similar products
-
-
-# Notification: confirmation de la demande de devenir créateur => mail
-# Notification: -confimation de la publication => mail
-
-
-# Mise en place des notifications: 
-    utilisation dans les autres méthodes
-        -Createur
-            -Demande de livraison sur une commande payée
-            -Confirmation de réception
-            -Paiement => mail
-        -User
-            -confirmation de livraison et facturaction
-            -Paiement sur une commande => mail à chaque fois
-            -Paiement Affiliation
-            -Remboursement => mail
+# Notifications externes: Revoir les notifications envoyées et bien les formuler
+    # style welcome notification and other notifications

@@ -18,49 +18,51 @@ class LoginController extends Controller
     public function __invoke(LoginRequest $request)
     {
         try {
-            // verify identifiers 
             $identifiers = $request->only(['email', 'password']);
 
-            if(auth()->attempt($identifiers)){
+            if (auth()->attempt($identifiers)) {
                 $user = auth()->user();
-                if($user->email_verified_at){
+                if ($user->email_verified_at) {
                     $token = $user->createToken(env('BACKEND_KEY'))->plainTextToken;
-                
+
+                    $notificationCount = $user->notifications()->where('state', 0)->count();
+                    $messageCount = $user->messages()->where('status', 0)->count();
+
                     return response()->json([
                         'status' => 'success',
                         'message' => 'Utilisateur connecté',
                         'data' => [
                             'user' => $user,
-                            'token' => $token
+                            'token' => $token,
+                            'notification_count' => $notificationCount,
+                            'message_count' => $messageCount
                         ]
                     ], 200);
-                }else{
+                } else {
                     return response()->json([
                         'status' => 'error',
                         'message' => 'Échec de l\'authentification.',
                         'errors' => 'Veuillez confirmez votre adresse email. Un message vous a été envoyé.'
                     ], 404);
                 }
-
             }
-            
+
             // verify if user is deleted
             $user = User::withTrashed()->where('email', $identifiers['email'])->first();
 
-            if($user->deleted_at){
+            if ($user->deleted_at) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Authentification interdite',
                     'errors' => 'Le compte a été supprimé. Veuillez faire une requête de restauration.'
                 ], 403);
             }
-            
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'Échec de l\'authentification',
                 'errors' => 'Adresse Email ou mot de passe incorrect!'
             ], 404);
-
         } catch (Exception $e) {
             return response()->json($e);
         }

@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     */
     Route::prefix('user')->group(function () {
         Route::get('{userId}', [UserController::class, 'get']);
+        Route::get('', [UserController::class, 'authUser']);
         Route::put('{user}', [UserController::class, 'update']);
         Route::delete('{user}', [UserController::class, 'delete']);
     });

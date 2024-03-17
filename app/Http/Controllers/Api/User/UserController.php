@@ -20,18 +20,19 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function get($userId){
+    public function get($userId = null)
+    {
 
         try {
-            if($userId == auth()->user()->id || auth()->user()->isAdmin()){
+            if ($userId == auth()->user()->id || auth()->user()->isAdmin()) {
                 $user = User::find($userId);
 
-                if($user){
+                if ($user) {
                     return response()->json([
                         'status' => 'success',
                         'data' => $user,
                     ], 201);
-                }else{
+                } else {
                     return response()->json([
                         'status' => 'error',
                         'message' => 'Utilisateur non trouvé',
@@ -43,7 +44,40 @@ class UserController extends Controller
                 'status' => 'error',
                 'message' => 'Vous n\'êtes pas autorisé à faire cette action.',
             ], 403);
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
+    }
 
+    /**
+     * Get auth user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+
+    public function authUser()
+    {
+
+        try {
+            $user = auth()->user();
+
+            if ($user) {
+
+                $user->notification_count = $user->notifications()->where('state', 0)->count();
+                $user->message_count = $user->messages()->where('status', 0)->count();
+
+                return response()->json([
+                    'status' => 'success',
+                    'data' => $user,
+                ], 201);
+                
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Utilisateur non trouvé',
+                ], 404);
+            }
         } catch (Exception $e) {
             return response()->json($e);
         }
@@ -56,7 +90,8 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateUserRequest $request, User $user){
+    public function update(UpdateUserRequest $request, User $user)
+    {
 
         try {
             if (auth()->user()->id !== $user->id) {
@@ -64,8 +99,8 @@ class UserController extends Controller
                     'status' => 'error',
                     'message' => 'Vous n\'avez pas l\'autorisation de mettre à jour ce profil.',
                 ], 403);
-            }else{
-                
+            } else {
+
                 $userData = $request->only(['name', 'email', 'phone', 'location']);
                 $message = "";
                 $oldEmail = $user->email;
@@ -89,22 +124,22 @@ class UserController extends Controller
                     'message' => 'Mise à jour du profil effectuée.' . $message,
                     'data' => $user,
                 ], 201);
-                
             }
         } catch (Exception $e) {
             return response()->json($e);
         }
     }
 
-    public function delete(User $user){
+    public function delete(User $user)
+    {
         try {
             if (auth()->user()->id !== $user->id && !$this->authorize('isAdmin', auth()->user())) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Vous n\'avez pas l\'autorisation de supprimer cet utilisateur.',
                 ], 403);
-            } else{
-                
+            } else {
+
                 // solf delete
                 $user->delete();
 
@@ -113,13 +148,13 @@ class UserController extends Controller
                     'message' => 'Suppression effectuée avec succès.'
                 ], 200);
             }
-
         } catch (Exception $e) {
             return response()->json($e);
         }
     }
 
-    private function updateEmail($user){
+    private function updateEmail($user)
+    {
         $user->update([
             'email_verified_at' => null,
         ]);
@@ -127,18 +162,19 @@ class UserController extends Controller
         // envoie de mail
         Mail::to($user->email)->send(new VerifyEmailMail($user));
         Auth::user()->tokens()->delete();
-        
+
         $mailIsSendMessage = " Changement d'adresse mail. Un mail a été envoyé. L'utilisateur a été déconnecté.";
         return $mailIsSendMessage;
     }
 
 
-    public function getUsersInTrash(Request $request){
+    public function getUsersInTrash(Request $request)
+    {
         try {
             $perPage = $request->get('perPage', 15);
 
             $users = User::onlyTrashed()->paginate($perPage);
-        
+
             return response()->json([
                 'status' => 'success',
                 'current_page' => $users->currentPage(),
@@ -148,9 +184,8 @@ class UserController extends Controller
                     'prevUrl' => $users->previousPageUrl(),
                     'total' => $users->total(),
                 ],
-            ], 200); 
-
-        }catch (Exception $e) {
+            ], 200);
+        } catch (Exception $e) {
             return response()->json($e);
         }
     }

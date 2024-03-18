@@ -20,7 +20,26 @@ class StoreProductController extends Controller
         try {
 
             if (auth()->user()->isAdmin()) {
-                $this->storeAtounProduct($request);
+                $productData = [
+                    'title' => $request->title,
+                    'caracteristics' => $request->caracteristics,
+                    'delivering' => null,
+                    'old_price' => null,
+                    'current_price' => 0,
+                    'creator_id' => 0,
+                    'disponibility' => 1,
+                    'status' => 2
+                ];
+        
+        
+                $product = Product::create($productData);
+        
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Produit Atoun ajouté avec succès.',
+                    'data' => $product
+                ], 201);
+
             } else if (auth()->user()->creator) {
                 $creator = auth()->user()->creator;
 
@@ -109,25 +128,25 @@ class StoreProductController extends Controller
     }
 
 
-    private function storeAtounProduct($request)
-    {
-        $productData = [
-            'title' => $request->title,
-            'caracteristics' => $request->caracteristics,
-            'delivering' => null,
-            'old_price' => null,
-            'current_price' => 0,
-            'creator_id' => 0,
-            'disponibility' => 1,
-        ];
+    // private function storeAtounProduct($request)
+    // {
+    //     $productData = [
+    //         'title' => $request->title,
+    //         'caracteristics' => $request->caracteristics,
+    //         'delivering' => null,
+    //         'old_price' => null,
+    //         'current_price' => 0,
+    //         'creator_id' => 0,
+    //         'disponibility' => 1,
+    //     ];
 
 
-        $product = Product::create($productData);
+    //     $product = Product::create($productData);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Produit Atoun ajouté avec succès.',
-            'data' => $product
-        ], 201);
-    }
+    //     return response()->json([
+    //         'status' => 'success',
+    //         'message' => 'Produit Atoun ajouté avec succès.',
+    //         'data' => $product
+    //     ], 201);
+    // }
 }

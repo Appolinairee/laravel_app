@@ -106,7 +106,22 @@ class GetProductController extends Controller
             ], 200);
 
 
-        }catch (Exception $e) {
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
+    }
+
+
+    public function getProductsPresentations () {
+        try {
+            $products = $products = Product::with('medias')->where('status', 2)->get()->shuffle();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $products,
+            ], 200);
+
+        } catch (Exception $e) {
             return response()->json($e);
         }
     }

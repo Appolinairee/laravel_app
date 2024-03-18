@@ -40,6 +40,6 @@ class ResetPasswordRequest extends FormRequest
             'error' => true,
             'message' => 'Erreur de validation',
             'errorsList' => $validator->errors()
-        ]));
+        ],  JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

@@ -66,7 +66,7 @@ Route::middleware('auth:sanctum')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::prefix('products')->group(function () {
-        Route::post('', [StoreProductController::class, '__invoke']);
+        Route::post('', [StoreProductController::class, 'storeProduct']);
         Route::put('/{product}', [UpdateProductController::class, '__invoke']);
         Route::delete('/{product}', [DeleteProductController::class, '__invoke']);
 

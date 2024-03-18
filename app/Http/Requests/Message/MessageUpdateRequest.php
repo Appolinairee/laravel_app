@@ -5,6 +5,7 @@ namespace App\Http\Requests\Message;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
 
 class MessageUpdateRequest extends FormRequest
 {
@@ -40,6 +41,6 @@ class MessageUpdateRequest extends FormRequest
             'error' => true,
             'message' => 'Erreur de validation',
             'errorsList' => $validator->errors()
-        ]));
+        ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

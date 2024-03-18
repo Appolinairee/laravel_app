@@ -5,6 +5,7 @@ namespace App\Http\Requests\Product;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
 
 class StoreProductImageRequest extends FormRequest
 {
@@ -41,6 +42,6 @@ class StoreProductImageRequest extends FormRequest
             'error' => true,
             'message' => 'Erreur de validation',
             'errorsList' => $validator->errors()
-        ]));
+        ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY));
     }
 }

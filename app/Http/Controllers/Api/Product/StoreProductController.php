@@ -15,11 +15,15 @@ use Illuminate\Support\Str;
 
 class StoreProductController extends Controller
 {
-    public function __invoke(StoreProductRequest $request){
+    public function storeProduct(StoreProductRequest $request)
+    {
         try {
-            if(auth()->user()->creator){
+
+            if (auth()->user()->isAdmin()) {
+                $this->storeAtounProduct($request);
+            } else if (auth()->user()->creator) {
                 $creator = auth()->user()->creator;
-    
+
                 // notifications for admins
                 $admins = User::where('role', 'admin')->get();
                 foreach ($admins as $admin) {
@@ -27,14 +31,14 @@ class StoreProductController extends Controller
                     $data = [
                         'subject' => 'Un nouveau produit MIA!',
                         'greeting' => $admin->name,
-                        'message' => 'Le créateur @'. $creator->name .'@ a créé un nouveau produit dénommé @'. $request->title . '@.',
+                        'message' => 'Le créateur @' . $creator->name . '@ a créé un nouveau produit dénommé @' . $request->title . '@.',
                         'actionText' => 'Voir le produit pour confirmer',
                         'actionUrl' => '',
                     ];
-    
+
                     $admin->notify(new GeneralNotification($data));
                 }
-    
+
                 $productData = [
                     'title' => $request->title,
                     'caracteristics' => $request->caracteristics,
@@ -44,27 +48,26 @@ class StoreProductController extends Controller
                     'creator_id' => $creator->id,
                     'disponibility' => $request->disponibility,
                 ];
-    
+
                 // quantity can be defined when disponibility is 1(true)
-                if(isset($request->quantity) && $request->disponibility == 1){
+                if (isset($request->quantity) && $request->disponibility == 1) {
                     $productData['quantity'] = $request->quantity;
-                }
-                else if(isset($request->quantity) && $request->disponibility != 1){
+                } else if (isset($request->quantity) && $request->disponibility != 1) {
                     return response()->json([
                         'status' => 'false',
                         'message' => 'Produit non disponible. Vous ne pouvez indiquer le nombre',
                     ], 403);
                 }
-    
+
                 $product = Product::create($productData);
-    
-                if(!empty($request->category_ids)){
+
+                if (!empty($request->category_ids)) {
                     $product->categories()->attach($request->category_ids);
                 }
-    
-                if($request->new_category){
+
+                if ($request->new_category) {
                     $slug = Str::slug($request->new_category);
-    
+
                     Category::create([
                         'name' => $request->new_category,
                         'image' => null,
@@ -84,18 +87,17 @@ class StoreProductController extends Controller
                         'notifiable_type' => \App\Models\Product::class,
                         'status' => 0
                     ];
-        
+
                     (new NotificationController)->store($notificationData);
                 }
 
-                
+
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Votre produit a été ajouté avec succès. AtounAfrica s\'empresse de le confirmer.',
                     'data' => $product->fresh('categories')
                 ], 201);
-    
-            }else {
+            } else {
                 return response()->json([
                     'status' => 'false',
                     'message' => 'Vous n\'êtes pas encore un créateur.',
@@ -104,5 +106,28 @@ class StoreProductController extends Controller
         } catch (Exception $e) {
             return response()->json($e);
         }
+    }
+
+
+    private function storeAtounProduct($request)
+    {
+        $productData = [
+            'title' => $request->title,
+            'caracteristics' => $request->caracteristics,
+            'delivering' => null,
+            'old_price' => null,
+            'current_price' => 0,
+            'creator_id' => 0,
+            'disponibility' => 1,
+        ];
+
+
+        $product = Product::create($productData);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Produit Atoun ajouté avec succès.',
+            'data' => $product
+        ], 201);
     }
 }

@@ -12,27 +12,27 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class GetProductController extends Controller
 {
-    public function getProducts(Request $request){
+    public function getProducts(Request $request)
+    {
         try {
             $perPage = $request->get('perPage', 15);
             $page = $request->get('page', 1);
             $query = $request->get('query');
 
 
-            if($query){
+            if ($query) {
                 $productsQuery = Product::query();
-                $allProducts = $productsQuery->where('title', 'like', '%' . $query . '%')->get();
-            }else{
-                $allProducts = Product::with('medias')->get();
+                $allProducts = $productsQuery->where('title', 'like', '%' . $query . '%')->where('status', 1)->get();
+            } else {
+                $allProducts = Product::with('medias')->where('status', 1)->get();
             }
-        
 
             $selectedProducts = collect();
 
             $productsPerGroup = 1;
             $cycles = ceil($allProducts->count() / ($productsPerGroup * 3));
 
-            for ($cycle=0; $cycle < $cycles; $cycle++) { 
+            for ($cycle = 0; $cycle < $cycles; $cycle++) {
 
                 //random products
                 $randomProducts = $allProducts
@@ -41,13 +41,13 @@ class GetProductController extends Controller
                     })
                     ->shuffle()
                     ->take($productsPerGroup);
-                
+
                 $selectedProducts = $selectedProducts->merge($randomProducts);
-                
+
                 if ($randomProducts->count() < $productsPerGroup) {
                     break;
                 }
-                
+
                 // latests products
                 $latestProducts = $allProducts
                     ->reject(function ($product) use ($selectedProducts) {
@@ -55,9 +55,9 @@ class GetProductController extends Controller
                     })
                     ->sortByDesc('created_at')
                     ->take($productsPerGroup);
-                
+
                 $selectedProducts = $selectedProducts->merge($latestProducts);
-                
+
                 if ($latestProducts->count() < $productsPerGroup) {
                     break;
                 }
@@ -69,18 +69,17 @@ class GetProductController extends Controller
                     })
                     ->sortByDesc('created_at')
                     ->take($productsPerGroup);
-                
+
                 $selectedProducts = $selectedProducts->merge($popularProducts);
-                
+
                 if ($popularProducts->count() < $productsPerGroup) {
                     break;
                 }
-
             }
 
             $productsArray = $selectedProducts->map(function ($product) {
                 $product->likes_count = $product->likes()->count();
-                
+
                 $product->comments_count = $product->comments()->count();
                 return $product;
             })->toArray();
@@ -104,15 +103,14 @@ class GetProductController extends Controller
                     'next_page_url' => $paginator->nextPageUrl(),
                 ],
             ], 200);
-
-
         } catch (Exception $e) {
             return response()->json($e);
         }
     }
 
 
-    public function getProductsPresentations () {
+    public function getProductsPresentations()
+    {
         try {
             $products = $products = Product::with('medias')->where('status', 2)->get()->shuffle();
 
@@ -120,7 +118,6 @@ class GetProductController extends Controller
                 'status' => 'success',
                 'data' => $products,
             ], 200);
-
         } catch (Exception $e) {
             return response()->json($e);
         }
@@ -128,9 +125,11 @@ class GetProductController extends Controller
 
 
 
-    public function getProduct($productId){
+    public function getProduct($productId)
+    {
         try {
-            $product = Product::with('medias', 'categories')->findOrFail($productId);
+
+            $product = Product::with('medias', 'categories')->where('status', 1)->findOrFail($productId);
 
             $product->similarProducts = $product->similarProducts();
 
@@ -138,22 +137,17 @@ class GetProductController extends Controller
                 'status' => 'success',
                 'data' => $product
             ], 200);
-
-
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json($e);
         }
     }
-    
-    
-    public function getProductByCreator(Creator $creator, Request $request){
-        try {
-            
-            $perPage = $request->get('perPage', 15);
 
-            $products = $creator->products()
-                        ->orderBy('created_at', 'desc')
-                        ->paginate($perPage);
+
+    public function getProductByCreator(Creator $creator, Request $request)
+    {
+        try {
+            $perPage = $request->get('perPage', 15);
+            $products = $creator->products()->where('status', 1)->orderBy('created_at', 'desc')->paginate($perPage);
 
             return response()->json([
                 'status' => 'success',
@@ -164,24 +158,23 @@ class GetProductController extends Controller
                     'prevUrl' => $products->previousPageUrl(),
                     'total' => $products->total(),
                 ],
-            ], 200); 
-
-        }catch (Exception $e) {
+            ], 200);
+        } catch (Exception $e) {
             return response()->json($e);
         }
     }
 
 
 
-
-    public function getProductByCategory(Category $category, Request $request){
+    public function getProductByCategory(Category $category, Request $request)
+    {
         try {
 
             $perPage = $request->get('perPage', 15);
 
-            $products = $category->products()
-                        ->orderBy('created_at', 'desc')
-                        ->paginate($perPage);
+            $products = $category->products()->where('status', 1)
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
 
             return response()->json([
                 'status' => 'success',
@@ -192,20 +185,20 @@ class GetProductController extends Controller
                     'prevUrl' => $products->previousPageUrl(),
                     'total' => $products->total(),
                 ],
-            ], 200); 
-
-        }catch (Exception $e) {
+            ], 200);
+        } catch (Exception $e) {
             return response()->json($e);
         }
     }
 
 
-    public function getProductsInTrash(Request $request){
+    public function getProductsInTrash(Request $request)
+    {
         try {
             $perPage = $request->get('perPage', 15);
 
             $products = Product::onlyTrashed()->paginate($perPage);
-        
+
             return response()->json([
                 'status' => 'success',
                 'current_page' => $products->currentPage(),
@@ -215,11 +208,49 @@ class GetProductController extends Controller
                     'prevUrl' => $products->previousPageUrl(),
                     'total' => $products->total(),
                 ],
-            ], 200); 
-
-        }catch (Exception $e) {
+            ], 200);
+        } catch (Exception $e) {
             return response()->json($e);
         }
     }
-    
+
+
+    public function getToValidateProducts(Request $request)
+    {
+        try {
+            $perPage = $request->get('perPage', 15);
+
+            $products = Product::where('status', 0)->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+
+            return response()->json([
+                'status' => 'success',
+                'current_page' => $products->currentPage(),
+                'data' => $products->items(),
+                'pagination' => [
+                    'nextUrl' => $products->nextPageUrl(),
+                    'prevUrl' => $products->previousPageUrl(),
+                    'total' => $products->total(),
+                ],
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
+    }
+
+
+    public function getToValidateProduct ($productId)
+    {
+        try {
+            $product = Product::with('medias', 'categories')->where('status', 0)->findOrFail($productId);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $product
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
+    }
+
 }

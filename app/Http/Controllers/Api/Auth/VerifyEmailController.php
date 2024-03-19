@@ -78,7 +78,7 @@ class VerifyEmailController extends Controller
                 return response()->json([
                     'status' => 'failure',
                     'message' => 'Le mail de l\'utilisateur est déjà vérifié',
-                ], 200);
+                ], 403);
             }
 
         } catch (Exception $e) {

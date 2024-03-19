@@ -1,9 +1,6 @@
-### Let's think this
-
-# only active products and creators should be 
+### Let's think this 
 
 # demande de remboursement par les utilisateurs.
-
 # Route::post('/wallet/withdraw', [WalletController::class, 'withdrawFunds']);
 
 # Incopore front route for notification's link and for mail url

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\AdminUpdateCreator;
 use App\Http\Controllers\Api\Admin\ProductAdminUpdate;
+use App\Http\Controllers\Api\Creator\GetCreatorController;
 use App\Http\Controllers\Api\Product\CategoriesController;
 use App\Http\Controllers\Api\Product\GetProductController;
 use App\Http\Controllers\Api\User\UserController;
@@ -28,11 +29,14 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::prefix('products')->group(function () {
         Route::put('{product}/status', [ProductAdminUpdate::class, 'activeProduct']);
         Route::get('/trash', [GetProductController::class, 'getProductsInTrash']);
+        Route::get('/invalid', [GetProductController::class, 'getToValidateProducts']);
+        Route::get('/invalid/{productId}', [GetProductController::class, 'getToValidateProduct']);
     });
 
 
     Route::prefix('creators')->group(function () {
         Route::put('{creator}/status', [AdminUpdateCreator::class, 'activeCreator']);
+        Route::get('/trash', [GetCreatorController::class, 'getCreatorsInTrash']);
     });
 
 });

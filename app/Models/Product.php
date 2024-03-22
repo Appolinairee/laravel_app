@@ -87,4 +87,14 @@ class Product extends Model
     {
         return $this->interactions()->where('type', 'comment');
     }
+
+    public function likesForUser($userId)
+    {
+        return $this->likes()->where('user_id', $userId);
+    }
+
+    public function isLiked($userId): bool
+    {
+        return $this->likesForUser($userId)->exists();
+    }
 }

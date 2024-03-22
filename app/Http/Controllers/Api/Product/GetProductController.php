@@ -15,92 +15,66 @@ class GetProductController extends Controller
     public function getProducts(Request $request)
     {
         try {
-            $perPage = $request->get('perPage', 15);
+            $perPage = $request->get('perPage', 12);
             $page = $request->get('page', 1);
-            $query = $request->get('query');
+            $queryParam = $request->get('query');
+            $userId = $request->get('user_id');
+
+            $productsQuery = Product::query()
+                ->where('status', 1)
+                ->with(['medias' => function ($queryBuilder) {
+                    $queryBuilder->take(1);
+                }, 'creator' => function ($query) {
+                    $query->select('id', 'name', 'logo');
+                }])->select('id', 'title', 'old_price', 'current_price', 'creator_id', 'disponibility');
 
 
-            if ($query) {
-                $productsQuery = Product::query();
-                $allProducts = $productsQuery->where('title', 'like', '%' . $query . '%')->where('status', 1)->get();
-            } else {
-                $allProducts = Product::with('medias')->where('status', 1)->get();
+            if ($queryParam) {
+                $productsQuery->where(function ($query) use ($queryParam) {
+                    $query->where('title', 'like', '%' . $queryParam . '%')
+                        ->orWhere('description', 'like', '%' . $queryParam . '%');
+                });
             }
+
+
+            // if ($query) {
+            //     $productsQuery = Product::query();
+            //     $allProducts = $productsQuery->where('title', 'like', '%' . $query . '%')->where('status', 1)->get();
+            // } else {
+            //     $allProducts = Product::with('medias')->where('status', 1)->get();
+            // }
 
             $selectedProducts = collect();
 
-            $productsPerGroup = 1;
-            $cycles = ceil($allProducts->count() / ($productsPerGroup * 3));
 
-            for ($cycle = 0; $cycle < $cycles; $cycle++) {
+            $latestProducts = $productsQuery->latest()->take($perPage)->get();
+            $selectedProducts = $selectedProducts->merge($latestProducts);
 
-                //random products
-                $randomProducts = $allProducts
-                    ->reject(function ($product) use ($selectedProducts) {
-                        return $selectedProducts->contains('id', $product->id);
-                    })
-                    ->shuffle()
-                    ->take($productsPerGroup);
 
-                $selectedProducts = $selectedProducts->merge($randomProducts);
+            $randomProducts = $productsQuery->inRandomOrder()->take($perPage)->get();
+            $selectedProducts = $selectedProducts->merge($randomProducts);
 
-                if ($randomProducts->count() < $productsPerGroup) {
-                    break;
-                }
+            $popularProducts = $productsQuery->withCount('likes')->orderByDesc('likes_count')->take($perPage)->get();
+            $selectedProducts = $selectedProducts->merge($popularProducts);
 
-                // latests products
-                $latestProducts = $allProducts
-                    ->reject(function ($product) use ($selectedProducts) {
-                        return $selectedProducts->contains('id', $product->id);
-                    })
-                    ->sortByDesc('created_at')
-                    ->take($productsPerGroup);
 
-                $selectedProducts = $selectedProducts->merge($latestProducts);
+            $paginatedProducts = $productsQuery->paginate($perPage);
 
-                if ($latestProducts->count() < $productsPerGroup) {
-                    break;
-                }
-
-                //popular products
-                $popularProducts = $allProducts
-                    ->reject(function ($product) use ($selectedProducts) {
-                        return $selectedProducts->contains('id', $product->id);
-                    })
-                    ->sortByDesc('created_at')
-                    ->take($productsPerGroup);
-
-                $selectedProducts = $selectedProducts->merge($popularProducts);
-
-                if ($popularProducts->count() < $productsPerGroup) {
-                    break;
-                }
-            }
-
-            $productsArray = $selectedProducts->map(function ($product) {
+            foreach ($paginatedProducts as $product) {
                 $product->likes_count = $product->likes()->count();
-
                 $product->comments_count = $product->comments()->count();
-                return $product;
-            })->toArray();
-
-
-            $offset = ($page - 1) * $perPage;
-            $paginatedProducts = array_slice($productsArray, $offset, $perPage);
-            $totalProducts = count($productsArray);
-            $paginator = new LengthAwarePaginator($paginatedProducts, $totalProducts, $perPage, $page);
-
+                $product->medias_count = $product->medias()->count();
+                $product->is_liked = $product->isLiked($userId);
+            }
 
             return response()->json([
                 'status' => 'success',
-                'data' => $paginator->items(),
+                'current_page' => $paginatedProducts->currentPage(),
+                'data' => $paginatedProducts->items(),
                 'pagination' => [
-                    'current_page' => $paginator->currentPage(),
-                    'last_page' => $paginator->lastPage(),
-                    'per_page' => $paginator->perPage(),
-                    'total' => $paginator->total(),
-                    'prev_page_url' => $paginator->previousPageUrl(),
-                    'next_page_url' => $paginator->nextPageUrl(),
+                    'nextUrl' => $paginatedProducts->nextPageUrl(),
+                    'prevUrl' => $paginatedProducts->previousPageUrl(),
+                    'total' => $paginatedProducts->total(),
                 ],
             ], 200);
         } catch (Exception $e) {
@@ -221,7 +195,7 @@ class GetProductController extends Controller
             $perPage = $request->get('perPage', 15);
 
             $products = Product::where('status', 0)->orderBy('created_at', 'desc')
-            ->paginate($perPage);
+                ->paginate($perPage);
 
             return response()->json([
                 'status' => 'success',
@@ -239,7 +213,7 @@ class GetProductController extends Controller
     }
 
 
-    public function getToValidateProduct ($productId)
+    public function getToValidateProduct($productId)
     {
         try {
             $product = Product::with('medias', 'categories')->where('status', 0)->findOrFail($productId);
@@ -252,5 +226,4 @@ class GetProductController extends Controller
             return response()->json($e);
         }
     }
-
 }

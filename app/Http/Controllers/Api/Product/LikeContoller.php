@@ -30,14 +30,16 @@ class LikeContoller extends Controller
                 ->where('type', 'like')
                 ->first();
 
-
             if ($existingLike) {
                 $existingLike->forceDelete();
 
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Annulation du like',
-                    'data' => $existingLike,
+                    'data' => [
+                        'likes' => $product->likes()->count(),
+                        'isLiked' => $product->isLiked(auth()->id())
+                    ],
                 ], 201);
             }
 
@@ -54,26 +56,25 @@ class LikeContoller extends Controller
                 (new NotificationController)->store($notificationData);
             }
 
-            $like = Interaction::create([
+            Interaction::create([
                 'type' => 'like',
                 'user_id' => auth()->id(),
                 'entity_id' => $product->id,
                 'entity_type' => Product::class,
             ]);
 
-            $like->load('user');
-
             return response()->json([
                 'status' => 'success',
                 'message' => 'Like ajouté avec succès',
-                'data' => $like,
+                'data' => [
+                    'likes' => $product->likes()->count(),
+                    'isLiked' => $product->isLiked(auth()->id())
+                ],
             ], 201);
         } catch (Exception $e) {
             return response()->json($e);
         }
     }
-
-
 
 
 

@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Api\Product;
 
+use App\Helpers\FrontendLink;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Creator;
 use App\Models\Product;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Str;
 
 class GetProductController extends Controller
 {
@@ -65,6 +68,12 @@ class GetProductController extends Controller
                 $product->comments_count = $product->comments()->count();
                 $product->medias_count = $product->medias()->count();
                 $product->is_liked = $product->isLiked($userId);
+
+
+                if ($userId) {
+                    $affiliateCode = User::findOrFail($userId)->affiliate_code;
+                    $product->affiliation_link = (new FrontendLink())->affiliateLink($product->title, $affiliateCode);
+                }
             }
 
             return response()->json([

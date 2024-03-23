@@ -31,7 +31,8 @@ class RegisterController extends Controller
                     'rounds' => 12
                 ]),
                 'phone' => $request->phone,
-                'location' => $request->location
+                'location' => $request->location,
+                'affiliate_code' => substr(md5($request->name), 0, 8)
             ]);
 
             $token = $user->createToken(env('BACKEND_KEY'))->plainTextToken;

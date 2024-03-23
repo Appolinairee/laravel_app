@@ -30,7 +30,7 @@ class UpdateUserRequest extends FormRequest
             'name' => 'sometimes|required|unique:users,name',
             'email' => 'sometimes|required|email|unique:users,email',
             'phone' => 'sometimes|string',
-            'location' => 'nullable|string', 
+            'location' => 'nullable|string',
         ];
     }
 

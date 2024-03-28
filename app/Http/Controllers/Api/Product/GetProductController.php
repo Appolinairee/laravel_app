@@ -25,9 +25,7 @@ class GetProductController extends Controller
 
             $productsQuery = Product::query()
                 ->where('status', 1)
-                ->with(['medias' => function ($queryBuilder) {
-                    $queryBuilder->take(1);
-                }, 'creator' => function ($query) {
+                ->with(['creator' => function ($query) {
                     $query->select('id', 'name', 'logo');
                 }])->select('id', 'title', 'old_price', 'current_price', 'creator_id', 'disponibility');
 
@@ -68,13 +66,16 @@ class GetProductController extends Controller
                 $product->comments_count = $product->comments()->count();
                 $product->medias_count = $product->medias()->count();
                 $product->is_liked = $product->isLiked($userId);
-
+                $product->load(['medias' => function ($query) {
+                    $query->take(1); 
+                }]);
 
                 if ($userId) {
                     $affiliateCode = User::findOrFail($userId)->affiliate_code;
                     $product->affiliation_link = (new FrontendLink())->affiliateLink($product->title, $affiliateCode);
                 }
             }
+            
 
             return response()->json([
                 'status' => 'success',

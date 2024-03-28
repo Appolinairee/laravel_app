@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\Interaction;
 
+use App\Helpers\FrontendLink;
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -65,9 +67,16 @@ class NotificationController extends Controller
         try {
             $perPage = $request->get('perPage', 10);
 
-            $notifications = auth()->user()->notifications()->with(['notificationEntity'])
+            $notifications = auth()->user()->notifications()
                 ->orderBy('created_at', 'desc')
                 ->paginate($perPage);
+
+            foreach ($notifications as $notification){
+                $notification->update(['link' => (new FrontendLink())->notificationLink($notification->notifiable_type, $notification->notificationEntity) ]);
+
+                $carbonDate = Carbon::parse($notification->created_at);
+                $notification->time_ago = $carbonDate->diffForHumans();
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -78,7 +87,6 @@ class NotificationController extends Controller
                     'prevUrl' => $notifications->previousPageUrl(),
                     'total' => $notifications->total(),
                 ],
-                'current_page' => $notifications->currentPage()
             ]);
 
         } catch (Exception $e) {

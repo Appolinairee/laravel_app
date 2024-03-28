@@ -53,8 +53,8 @@ class MessageController extends Controller
             ->orWhere('receiver_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
-        
-        
+
+
         return $this->responseMessages($messages, 'Admin: Messages for the user.');
     }
 
@@ -149,32 +149,36 @@ class MessageController extends Controller
     public function getUsersWithLastMessages()
     {
         try {
-
             $userId = auth()->id();
 
             $usersWithMessages = User::where('id', '!=', $userId)
-                ->with(['messages', 'receivedMessages'])
+                ->with(['messages' => function ($query) {
+                    $query->latest()->first();
+                }])
+                ->with(['receivedMessages' => function ($query) {
+                    $query->latest()->first();
+                }])
                 ->get();
 
             $relevantUsersWithMessages = $usersWithMessages->map(function ($user) use ($userId) {
-                $allMessages = $user->messages->merge($user->receivedMessages);
-                $user->latest_message = $allMessages
-                    ->filter(function ($message) use ($userId) {
-                        $message['is_current_user'] = $message->sender_id == $userId;
-                        return in_array($message->sender_id, [$userId]) || in_array($message->receiver_id, [$userId]);
-                    })
-                    ->unique('id')
-                    ->sortByDesc('created_at')
-                    ->first();
+                $latestSentMessage = $user->messages->first();
+
+                $latestReceivedMessage = $user->receivedMessages->first();
+
+                $user->latest_message = $latestSentMessage ? ($latestReceivedMessage ? ($latestSentMessage->created_at > $latestReceivedMessage->created_at ? $latestSentMessage : $latestReceivedMessage) : $latestSentMessage) : $latestReceivedMessage;
 
                 return $user;
+
             })->filter(function ($user) {
                 return !is_null($user->latest_message);
             });
 
+            $cleanedMessages =  $relevantUsersWithMessages->makeHidden('messages');
+            $cleanedMessages =  $cleanedMessages->makeHidden('received_messages');
+
             return response()->json([
                 'status' => 'success',
-                'data' => $relevantUsersWithMessages,
+                'data' => $cleanedMessages
             ], 200);
         } catch (Exception $e) {
             return response()->json([

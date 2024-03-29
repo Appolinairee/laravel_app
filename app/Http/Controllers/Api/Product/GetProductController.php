@@ -37,7 +37,6 @@ class GetProductController extends Controller
                 });
             }
 
-
             // if ($query) {
             //     $productsQuery = Product::query();
             //     $allProducts = $productsQuery->where('title', 'like', '%' . $query . '%')->where('status', 1)->get();
@@ -47,7 +46,7 @@ class GetProductController extends Controller
 
             $selectedProducts = collect();
 
-
+            
             $latestProducts = $productsQuery->latest()->take($perPage)->get();
             $selectedProducts = $selectedProducts->merge($latestProducts);
 

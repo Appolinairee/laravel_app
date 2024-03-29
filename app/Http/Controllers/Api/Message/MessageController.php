@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Message;
 use App\Http\Controllers\Controller;
 use App\Models\Message;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -157,7 +158,7 @@ class MessageController extends Controller
                 }])
                 ->with(['receivedMessages' => function ($query) {
                     $query->latest()->first();
-                }])
+                }])->select('id', 'name')
                 ->get();
 
             $relevantUsersWithMessages = $usersWithMessages->map(function ($user) use ($userId) {
@@ -167,8 +168,17 @@ class MessageController extends Controller
 
                 $user->latest_message = $latestSentMessage ? ($latestReceivedMessage ? ($latestSentMessage->created_at > $latestReceivedMessage->created_at ? $latestSentMessage : $latestReceivedMessage) : $latestSentMessage) : $latestReceivedMessage;
 
-                return $user;
+                $user->load('creator');
+                if ($user->creator) {
+                    $user->creator->makeHidden(['creator_balance', 'phone', 'email', 'user_id']);
+                }
 
+                if ($user->latest_message) {
+                    $carbonDate = Carbon::parse($user->latest_message->updated_at);
+                    $user->latest_message->time_ago = $carbonDate->shortRelativeToNowDiffForHumans();
+                }
+
+                return $user;
             })->filter(function ($user) {
                 return !is_null($user->latest_message);
             });
@@ -183,7 +193,7 @@ class MessageController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'An error occurred while fetching users with last messages.',
+                'message' => "An error occurred while fetching users with last messages. $e",
             ], 500);
         }
     }

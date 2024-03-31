@@ -34,12 +34,12 @@ class CommentController extends Controller
                 });
             });
 
-            if ($productsOrders->isEmpty()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Vous n\'êtes pas autorisé à faire cette action.',
-                ], 403);
-            }
+            // if ($productsOrders->isEmpty()) {
+            //     return response()->json([
+            //         'status' => 'error',
+            //         'message' => 'Vous n\'êtes pas autorisé à faire cette action.',
+            //     ], 403);
+            // }
 
             // push notification for creator
             $notificationData  = [

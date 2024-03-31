@@ -78,21 +78,15 @@ class MessageController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
 
-        return $this->responseMessages($messages, 'User: Messages partégés avec l\'utilisateur.');
+        return $this->responseMessages($messages, 'User: Messages partagés avec l\'utilisateur.');
     }
 
 
 
-    /**
-     * Retrieve messages between two users.
-     *
-     * @param  \App\Models\User  $user1 The first user.
-     * @param  \App\Models\User  $user2 The second user.
-     * @return \Illuminate\Http\JsonResponse
-     */
     protected function getAllMessagesBetweenUsers(User $user1, User $user2)
     {
         try {
+
             $messages = Message::where(function ($query) use ($user1, $user2) {
                 $query->where('sender_id', $user1->id)
                     ->where('receiver_id', $user2->id);
@@ -100,8 +94,7 @@ class MessageController extends Controller
                 ->orWhere(function ($query) use ($user1, $user2) {
                     $query->where('sender_id', $user2->id)
                         ->where('receiver_id', $user1->id);
-                })
-                ->get();
+                });
 
             return $messages;
         } catch (Exception $e) {
@@ -125,7 +118,10 @@ class MessageController extends Controller
         $formattedMessages = $messages->map(function ($message) use ($userId) {
             return array_merge(
                 $message->toArray(),
-                ['is_current_user' => $message->sender_id == $userId]
+                [
+                    'is_current_user' => $message->sender_id == $userId,
+                    'time_ago' => Carbon::parse($message->updated_at)->shortRelativeToNowDiffForHumans()
+                ]
             );
         });
 
@@ -154,10 +150,10 @@ class MessageController extends Controller
 
             $usersWithMessages = User::where('id', '!=', $userId)
                 ->with(['messages' => function ($query) {
-                    $query->latest()->first();
+                    $query->where('receiver_id', '!=', 0)->where('sender_id', '!=', 0)->latest()->first();
                 }])
                 ->with(['receivedMessages' => function ($query) {
-                    $query->latest()->first();
+                    $query->where('receiver_id', '!=', 0)->where('sender_id', '!=', 0)->latest()->first();
                 }])->select('id', 'name')
                 ->get();
 

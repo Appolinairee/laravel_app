@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Creator;
 use App\Models\Product;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -46,7 +47,7 @@ class GetProductController extends Controller
 
             $selectedProducts = collect();
 
-            
+
             $latestProducts = $productsQuery->latest()->take($perPage)->get();
             $selectedProducts = $selectedProducts->merge($latestProducts);
 
@@ -66,7 +67,7 @@ class GetProductController extends Controller
                 $product->medias_count = $product->medias()->count();
                 $product->is_liked = $product->isLiked($userId);
                 $product->load(['medias' => function ($query) {
-                    $query->take(1); 
+                    $query->take(1);
                 }]);
 
                 if ($userId) {
@@ -74,7 +75,7 @@ class GetProductController extends Controller
                     $product->affiliation_link = (new FrontendLink())->affiliateLink($product->title, $affiliateCode);
                 }
             }
-            
+
 
             return response()->json([
                 'status' => 'success',
@@ -108,13 +109,28 @@ class GetProductController extends Controller
 
 
 
-    public function getProduct($productId)
+    public function getProduct($productId, Request $request)
     {
         try {
-
-            $product = Product::with('medias', 'categories')->where('status', 1)->findOrFail($productId);
+            $userId = $request->get('user_id');
+            $product = Product::with(['medias', 'creator', 'comments'])->where('status', 1)->findOrFail($productId);
 
             $product->similarProducts = $product->similarProducts();
+            $product->likes_count = $product->likes()->count();
+            $product->comments_count = $product->comments()->count();
+            $product->medias_count = $product->medias()->count();
+            $product->is_liked = $product->isLiked($userId);
+
+            if ($userId) {
+                $affiliateCode = User::findOrFail($userId)->affiliate_code;
+                $product->affiliation_link = (new FrontendLink())->affiliateLink($product->title, $affiliateCode);
+            }
+
+            foreach ($product->comments as $comment) {
+                $carbonDate = Carbon::parse($comment->updated_at);
+                $comment->time_ago = $carbonDate->diffForHumans();
+                $comment->user_name = $comment->user()->select('name')->value('name');
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -126,7 +142,7 @@ class GetProductController extends Controller
     }
 
 
-    public function getProductByCreator(Creator $creator, Request $request)
+    public function getProductByCreator(Request $request, Creator $creator)
     {
         try {
             $perPage = $request->get('perPage', 15);

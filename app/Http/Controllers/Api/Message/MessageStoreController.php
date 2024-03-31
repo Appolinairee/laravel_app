@@ -40,12 +40,13 @@ class MessageStoreController extends Controller
             }
 
             $receiver_id = ($receiver)?  $request->receiver_id : 0;
+            $sender_id = (auth()->user()->isAdmin())? 0 : auth()->id();
 
             $message = Message::create([
                 'content' => $content,
                 'type' => $request->type,
                 'receiver_id' => $receiver_id,
-                'sender_id' => auth()->user()->id
+                'sender_id' => $sender_id
             ]);
 
             // push notification for receiver user

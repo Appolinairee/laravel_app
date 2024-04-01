@@ -28,7 +28,7 @@ class GetProductController extends Controller
                 ->where('status', 1)
                 ->with(['creator' => function ($query) {
                     $query->select('id', 'name', 'logo');
-                }])->select('id', 'title', 'old_price', 'current_price', 'creator_id', 'disponibility');
+                }])->select('id', 'title', 'old_price', 'current_price', 'creator_id', 'disponibility', 'slug_name');
 
 
             if ($queryParam) {
@@ -62,20 +62,8 @@ class GetProductController extends Controller
             $paginatedProducts = $productsQuery->paginate($perPage);
 
             foreach ($paginatedProducts as $product) {
-                $product->likes_count = $product->likes()->count();
-                $product->comments_count = $product->comments()->count();
-                $product->medias_count = $product->medias()->count();
-                $product->is_liked = $product->isLiked($userId);
-                $product->load(['medias' => function ($query) {
-                    $query->take(1);
-                }]);
-
-                if ($userId) {
-                    $affiliateCode = User::findOrFail($userId)->affiliate_code;
-                    $product->affiliation_link = (new FrontendLink())->affiliateLink($product->title, $affiliateCode);
-                }
+                $this->getProductOtherDetails($product, $userId);
             }
-
 
             return response()->json([
                 'status' => 'success',
@@ -107,13 +95,28 @@ class GetProductController extends Controller
         }
     }
 
+    private function getProductOtherDetails($product, $userId)
+    {
+        $product->likes_count = $product->likes()->count();
+        $product->comments_count = $product->comments()->count();
+        $product->medias_count = $product->medias()->count();
+        $product->is_liked = $product->isLiked($userId);
 
+        $product->load(['medias' => function ($query) {
+            $query->take(1);
+        }]);
 
-    public function getProduct($productId, Request $request)
+        if ($userId) {
+            $affiliateCode = User::findOrFail($userId)->affiliate_code;
+            $product->affiliation_link = (new FrontendLink())->affiliateLink($product->title, $affiliateCode);
+        }
+    }
+
+    public function getProduct($productSlug, Request $request)
     {
         try {
             $userId = $request->get('user_id');
-            $product = Product::with(['medias', 'creator', 'comments'])->where('status', 1)->findOrFail($productId);
+            $product = Product::with(['medias', 'creator', 'comments'])->where('slug_name', $productSlug)->where('status', 1)->first();
 
             $product->similarProducts = $product->similarProducts();
             $product->likes_count = $product->likes()->count();
@@ -142,11 +145,17 @@ class GetProductController extends Controller
     }
 
 
+
     public function getProductByCreator(Request $request, Creator $creator)
     {
         try {
             $perPage = $request->get('perPage', 15);
             $products = $creator->products()->where('status', 1)->orderBy('created_at', 'desc')->paginate($perPage);
+            $userId = $request->get('user_id');
+
+            foreach ($products as $product) {
+                $this->getProductOtherDetails($product, $userId);
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -168,12 +177,16 @@ class GetProductController extends Controller
     public function getProductByCategory(Category $category, Request $request)
     {
         try {
-
             $perPage = $request->get('perPage', 15);
+            $userId = $request->get('user_id');
 
             $products = $category->products()->where('status', 1)
                 ->orderBy('created_at', 'desc')
                 ->paginate($perPage);
+
+            foreach ($products as $product) {
+                $this->getProductOtherDetails($product, $userId);
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -195,8 +208,13 @@ class GetProductController extends Controller
     {
         try {
             $perPage = $request->get('perPage', 15);
+            $userId = $request->get('user_id');
 
             $products = Product::onlyTrashed()->paginate($perPage);
+
+            foreach ($products as $product) {
+                $this->getProductOtherDetails($product, $userId);
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -218,9 +236,14 @@ class GetProductController extends Controller
     {
         try {
             $perPage = $request->get('perPage', 15);
+            $userId = $request->get('user_id');
 
             $products = Product::where('status', 0)->orderBy('created_at', 'desc')
                 ->paginate($perPage);
+
+            foreach ($products as $product) {
+                $this->getProductOtherDetails($product, $userId);
+            }
 
             return response()->json([
                 'status' => 'success',

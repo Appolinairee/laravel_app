@@ -142,7 +142,7 @@ Route::get('/categories', [CategoriesController::class, 'getCategories']);
 */
 Route::get('products', [getProductController::class, 'getProducts']);
 Route::get('products/presentations', [getProductController::class, 'getProductsPresentations']);
-Route::get('products/{product}', [getProductController::class, 'getProduct']);
+Route::get('products/{slug}', [getProductController::class, 'getProduct']);
 Route::get('products/creator/{creator}', [getProductController::class, 'getProductByCreator']);
 Route::get('products/category/{category}', [getProductController::class, 'getProductByCategory']);
 

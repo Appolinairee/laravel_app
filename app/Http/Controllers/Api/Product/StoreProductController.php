@@ -28,7 +28,8 @@ class StoreProductController extends Controller
                     'current_price' => 0,
                     'creator_id' => 0,
                     'disponibility' => 1,
-                    'status' => 2
+                    'status' => 2,
+                    'slug_name' => Str::slug($request->title),
                 ];
         
         
@@ -66,6 +67,7 @@ class StoreProductController extends Controller
                     'current_price' => $request->current_price,
                     'creator_id' => $creator->id,
                     'disponibility' => $request->disponibility,
+                    'slug_name' => Str::slug($request->title),
                 ];
 
                 // quantity can be defined when disponibility is 1(true)
@@ -109,7 +111,6 @@ class StoreProductController extends Controller
 
                     (new NotificationController)->store($notificationData);
                 }
-
 
                 return response()->json([
                     'status' => 'success',

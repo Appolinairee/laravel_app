@@ -25,7 +25,8 @@ class Product extends Model
         'deleted_at',
         'disponibility',
         'quantity',
-        'status'
+        'status',
+        'slug_name'
     ];
 
     public function creator()

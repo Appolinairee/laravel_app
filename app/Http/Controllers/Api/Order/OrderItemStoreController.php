@@ -12,7 +12,6 @@ use Illuminate\Auth\Access\AuthorizationException;
 
 class OrderItemStoreController extends Controller
 {
-    
     /**
      * Handle the incoming request.
      *
@@ -24,33 +23,24 @@ class OrderItemStoreController extends Controller
         try {
             $product = Product::find($request->product_id);
 
-            if(!$request->order_id){
+            $order =  $product->orderItems()->whereHas('product', function ($query) use ($product) {
+                $query->where('creator_id', $product->creator_id);
+            })->first()->order()->get();
+
+            if (!$order) {
                 $order = Order::create([
                     'user_id' => auth()->user()->id,
                     'creator_id' => $product->creator_id
                 ]);
 
                 $message = "Création d'une nouvelle commande. Produit ajouté à la commande.";
-            }else{
-                
-                $order = Order::findOrFail($request->order_id);
-
-                if($product->creator_id !== $order->creator_id){
-                    $order = Order::create([
-                        'user_id' => auth()->user()->id,
-                        'creator_id' => $product->creator_id
-                    ]);
-    
-                    $message = "Le produit est pour un créateur différent. Il a été ajouté à une nouvelle commande.";
-                }else{
-                    $this->authorize('storeInExistingOrder', $order);
-
-                    $message = "Produit ajouté à la commande";
-                }
+            } else {
+                $this->authorize('storeInExistingOrder', $order);
+                $message = "Produit ajouté à la commande";
             }
 
             // when order status is -1 (when order is under payment and receive its first transaction)
-            if($order->status > 1 || $order->amount_paid > 0 ){
+            if ($order->status > 1 || $order->amount_paid > 0) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Impossible de mettre à jour la commande d\'appartenance. Paiement en cours.',
@@ -59,7 +49,7 @@ class OrderItemStoreController extends Controller
 
 
             // when product already exists in order
-            if($order->order_items()->where('product_id', $product->id)->exists()){
+            if ($order->order_items()->where('product_id', $product->id)->exists()) {
                 return response()->json([
                     'status' => 'false',
                     'message' => 'Ce produit existe dans la commande.',
@@ -74,23 +64,21 @@ class OrderItemStoreController extends Controller
             ]);
 
             $totalAmount = $order->calculateTotalAmount();
+            $order->load('order_items');
 
             return response()->json([
                 'status' => 'success',
                 'message' => $message,
-                'data' => Order::with('order_items')->where('id', $order->id)->orderBy('created_at', 'desc')->first(),
+                'data' => $order,
                 'totalAmount' => $totalAmount,
             ], 201);
-
         } catch (AuthorizationException $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Vous n\'êtes pas autorisé à faire cette action.',
             ], 403);
-            
-        }   catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json($e);
         }
     }
-
 }

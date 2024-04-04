@@ -9,10 +9,8 @@ use App\Models\Contribution;
 use App\Models\Order;
 use App\Models\User;
 use App\Notifications\GeneralNotification;
-use App\Notifications\NewCreatorNotification;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
@@ -37,12 +35,15 @@ class PaymentController extends Controller
             }
 
             // verify order status
-            if ($order->status !== 0 && $order->status !== 1) {
+            if ($order->status != 0 && $order->status != 1) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Le statut de la commande doit être 0 ou 1 pour le paiement.',
                 ], 403);
             }
+
+            //update total amount (to fix it)
+            $order->update(['total_amount' => $order->calculateTotalAmount()]);
 
             if ($request->payment_type === 1) {
                 if ($request->amount_paid < $order->total_amount) {
@@ -52,24 +53,25 @@ class PaymentController extends Controller
                     ], 403);
                 }
 
-                //update total amount (to fix it)
-                $order->update(['total_amount' => $order->calculateTotalAmount()]);
-
                 if ($order->total_amount < $request->amount_paid) {
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Une erreur est survenue. Montant supérieure à celuide la commande.'
+                        'message' => 'Une erreur est survenue. Montant supérieure à celui de la commande.'
                     ], 403);
                 }
 
                 $order->update(['amount_paid' => $request->amount_paid]);
                 $order->update(['payment_type' => $request->payment_type]);
 
-
                 $order->update(['payment_status' => 1]); //paid status
                 $order->update(['status' => 2]); //delievering status
 
                 $this->notifyForPayment($order->creator, auth()->user(), $order);
+
+
+                $order->load('contributions');
+                $order->total_amount = $order->calculateTotalAmount();
+                $order->load('order_items');
 
                 return response()->json([
                     'status' => 'success',
@@ -89,12 +91,10 @@ class PaymentController extends Controller
 
 
             //update total amount (to fix it)
-            $order->update(['total_amount' => $order->calculateTotalAmount()]);
-
             if ($order->total_amount < $request->amount_paid) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Une erreur est survenue. Montant supérieur à celuide la commande.'
+                    'message' => 'Une erreur est survenue. Montant supérieur à celui de la commande.'
                 ], 403);
             }
 
@@ -110,6 +110,11 @@ class PaymentController extends Controller
                 'amount' => $request->amount_paid
             ]);
 
+            $order->update(['total_amount' => $order->calculateTotalAmount()]);
+            $order->total_amount = $order->calculateTotalAmount();
+            $order->load('contributions');
+            $order->load('order_items');
+
             // verify if is total level of contribution
             if ($order->amount_paid >= $order->total_amount) {
                 $order->update(['payment_status' => 1]); //paid status
@@ -120,10 +125,7 @@ class PaymentController extends Controller
                 return response()->json([
                     'status' => 'success',
                     'message' => "Cotisation ajoutée avec succès. Paiement pour la commande achevé.",
-                    'data' => [
-                        'order' => $order,
-                        'contributions' => $order->contributions
-                    ]
+                    'data' => $order
                 ], 200);
             }
 
@@ -133,10 +135,7 @@ class PaymentController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => "Cotisation ajoutée avec succès.",
-                'data' => [
-                    'order' => $order,
-                    'contributions' => $order->contributions
-                ]
+                'data' => $order,
             ], 200);
         } catch (AuthorizationException $e) {
             return response()->json([

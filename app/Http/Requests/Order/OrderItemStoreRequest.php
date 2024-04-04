@@ -27,7 +27,6 @@ class OrderItemStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'order_id' => 'sometimes|exists:orders,id',
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1',
         ];

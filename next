@@ -1,3 +1,24 @@
+# urgence fixing for best integration
+
+-  for each order_item, client want to know the temporal price.
+    Two alternatives:  
+    -Think to complete product details about order_item
+    -send price as attribut of order_item
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### Let's think this 
 
 # demande de remboursement par les utilisateurs.

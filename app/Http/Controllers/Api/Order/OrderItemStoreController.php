@@ -22,10 +22,13 @@ class OrderItemStoreController extends Controller
     {
         try {
             $product = Product::find($request->product_id);
+            $user = auth()->user();
 
-            $order =  $product->orderItems()->whereHas('product', function ($query) use ($product) {
-                $query->where('creator_id', $product->creator_id);
-            })->first()->order()->get();
+            $order = $user->orders()
+                ->whereHas('order_items.product', function ($query) use ($product) {
+                    $query->where('creator_id', $product->creator_id);
+                })
+                ->first();
 
             if (!$order) {
                 $order = Order::create([
@@ -63,14 +66,13 @@ class OrderItemStoreController extends Controller
                 'quantity' => $request->quantity
             ]);
 
-            $totalAmount = $order->calculateTotalAmount();
+            $order->total_amount = $order->calculateTotalAmount();
             $order->load('order_items');
 
             return response()->json([
                 'status' => 'success',
                 'message' => $message,
                 'data' => $order,
-                'totalAmount' => $totalAmount,
             ], 201);
         } catch (AuthorizationException $e) {
             return response()->json([

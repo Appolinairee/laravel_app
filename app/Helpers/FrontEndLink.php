@@ -29,7 +29,10 @@ class FrontendLink {
         if($notificationType === \App\Models\User::class){
             return str_replace(env('URL_FRONTEND'), '', $this->userLink($notificationEntity->name));
         }else if($notificationType === \App\Models\Order::class){
-            return str_replace(env('URL_FRONTEND'), '', $this->orderLink($notificationEntity->id));
+            if($notificationEntity && $notificationEntity->id)
+                return str_replace(env('URL_FRONTEND'), '', $this->orderLink($notificationEntity->id));
+            
+                return '';
         }else if($notificationType === \App\Models\Product::class){
             return str_replace(env('URL_FRONTEND'), '', $this->productLink($notificationEntity->title));
         }

@@ -4,7 +4,6 @@ use App\Http\Controllers\Api\Order\OrderGetController;
 use App\Http\Controllers\Api\Order\OrderItemController;
 use App\Http\Controllers\Api\Order\OrderItemStoreController;
 use App\Http\Controllers\Api\Order\OrderItemUpdateController;
-use App\Http\Controllers\Api\Order\OrderStoreController;
 use App\Http\Controllers\Api\Order\OrderUpdateController;
 use App\Http\Controllers\Api\Order\PaymentController;
 use Illuminate\Support\Facades\Route;
@@ -41,7 +40,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/{orderItem}', [OrderItemController::class, 'orderItem']);
         Route::delete('/{orderItem}', [OrderItemController::class, 'delete']);
     });
-
 
 });
 

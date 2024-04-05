@@ -70,7 +70,7 @@ class PaymentController extends Controller
                 $order->update(['payment_type' => $request->payment_type]);
 
                 $order->update(['payment_status' => 1]); //paid status
-                $order->update(['status' => 2]); //delievering status
+                $order->update(['status' => 1]); //delievering status
 
                 $this->notifyForPayment($order->creator, auth()->user(), $order);
 
@@ -108,7 +108,7 @@ class PaymentController extends Controller
             $order->update(['amount_paid' => $request->amount_paid + $order->amount_paid]);
 
             $order->update(['payment_status' => 0]); // in payment status
-            $order->update(['status' => 1]); //payment order status
+            $order->update(['status' => 0]); //payment order status
 
             // store contribution
             Contribution::create([

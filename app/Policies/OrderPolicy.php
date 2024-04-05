@@ -57,7 +57,7 @@ class OrderPolicy
      */
     public function updateShipping(User $user, Order $order)
     {
-        return $user->id === $order->creator_id || $user->isAdmin();
+        return $user->id === $order->user_id || $user->isAdmin();
     }
 
 

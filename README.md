@@ -35,10 +35,11 @@ creator can add product disponibility
 order status is defined as tinyInteger
    -1: annulé 
     0: paiement
-    1: livraison
-    2: expédié
-    3: validé
-    4: remboursé
+    1: delievering in attempt
+    2: delievering
+    3: expédié
+    4: validé
+    5: annuler
 
     An order can contain multiple products but for the same creator. 
     When products are for the différent creator, we should create two differents orders

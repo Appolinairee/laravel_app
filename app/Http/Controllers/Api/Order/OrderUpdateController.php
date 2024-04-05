@@ -22,12 +22,15 @@ class OrderUpdateController extends Controller
         try {
             $this->authorize('update', $order);
 
-            if ($request->user()->can('updateOrderItem', $order)) {
-                $orderData = $request->only(['status', 'shipping_address']);
-            }
-
             if($request->user()->can('updateShipping', $order)){
-                $orderData = $request->only(['status', 'shipping_price', 'shipping_service', 'shipping_date']);
+
+                if($request->shipping_contact && $request->shipping_date && $request->shipping_address){
+                    $order->update(['status' => 1]);
+                }else{
+                    $order->update(['status' => 2]);
+                }
+
+                $orderData = $request->only(['status', 'shipping_price', 'shipping_service', 'shipping_date', 'shipping_contact', 'status', 'shipping_address']);
             }
 
 
@@ -51,6 +54,8 @@ class OrderUpdateController extends Controller
             }
 
             $order->update($orderData);
+            $order->load('contributions');
+            $order->load('order_items');
 
             return response()->json([
                 'status' => 'success',

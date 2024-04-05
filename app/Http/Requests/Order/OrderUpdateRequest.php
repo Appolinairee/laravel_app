@@ -27,13 +27,13 @@ class OrderUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'status' => 'sometimes|integer|in:-1, 0, 1, 2, 3, 4',
+            'status' => 'sometimes|integer|in:-1, 0, 1, 2, 3, 4, 5',
             'shipping_address' => 'sometimes|string',
             'shipping_price' => 'sometimes|numeric|min:0',
             'shipping_preview' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
             'shipping_service' => 'sometimes|string',
-            'shipping_date' => 'sometimes|date|date_format:Y-m-d H:i', 
-            'shipping_contact'=> 'regex:/^\d{8}$/'
+            'shipping_date' => 'sometimes|date|date_format:Y-m-d\TH:i', 
+            'shipping_contact'=> 'sometimes|numeric|regex:/^\d{8}$/'
         ];
     }
 

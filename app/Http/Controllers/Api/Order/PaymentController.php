@@ -37,15 +37,21 @@ class PaymentController extends Controller
             // verify order status
             if ($order->status != 0 && $order->status != 1) {
                 return response()->json([
-                    'status' => 'error',
                     'message' => 'Le statut de la commande doit être 0 ou 1 pour le paiement.',
+                ], 403);
+            }
+
+            // for incorrect payment_type choice
+            if($request->payment_type == 1 && $order->payment_type == 0){
+                return response()->json([
+                    'message' => 'Mauvais type de paiement.',
                 ], 403);
             }
 
             //update total amount (to fix it)
             $order->update(['total_amount' => $order->calculateTotalAmount()]);
 
-            if ($request->payment_type === 1) {
+            if ($request->payment_type == 1) {
                 if ($request->amount_paid < $order->total_amount) {
                     return response()->json([
                         'status' => 'error',

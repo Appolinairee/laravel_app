@@ -19,10 +19,11 @@ class Order extends Model
         'shipping_preview',
         'shipping_service',
         'shipping_date',
+        'shipping_contact',
         'creator_id',
         'amount_paid',
         'payment_type',
-        'payment_status'
+        'payment_status',
     ];
 
     protected $casts = [

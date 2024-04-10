@@ -18,13 +18,14 @@ class OrderItemStoreController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function __invoke(OrderItemStoreRequest $request)
     {
         try {
             $product = Product::find($request->product_id);
             $user = auth()->user();
 
-            $order = $user->orders()->where('status', 1)
+            $order = $user->orders()->where('status', '<', 1)
                 ->whereHas('order_items.product', function ($query) use ($product) {
                     $query->where('creator_id', $product->creator_id);
                 })

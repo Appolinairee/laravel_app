@@ -124,7 +124,7 @@ class PaymentController extends Controller
             // verify if is total level of contribution
             if ($order->amount_paid >= $order->total_amount) {
                 $order->update(['payment_status' => 1]); //paid status
-                $order->update(['status' => 2]); //delievering status
+                $order->update(['status' => 1]); //delievering status
 
                 $this->notifyForPayment($order->creator, auth()->user(), $order);
 
@@ -134,7 +134,6 @@ class PaymentController extends Controller
                     'data' => $order
                 ], 200);
             }
-
 
             $this->notifyForPayment($order->creator, auth()->user(), $order);
 

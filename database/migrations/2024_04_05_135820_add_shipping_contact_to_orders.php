@@ -14,7 +14,7 @@ class AddShippingContactToOrders extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->string('shipping_contact');
+            $table->string('shipping_contact')->nullable();
         });
     }
 

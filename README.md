@@ -48,7 +48,7 @@ order status is defined as tinyInteger
     Order_item: it's have one to many relationship with orders. 
     Order_item represents one product in orders
     His Status is different to orders satatus and may be:
-    -1 : remboursé
+     -1 : remboursé
      0 : en cours
      1 : payé
 

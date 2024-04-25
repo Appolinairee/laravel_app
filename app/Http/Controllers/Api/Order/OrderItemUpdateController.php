@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Api\Order;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\OrderItemUpdateRequest;
-use App\Models\Order;
 use App\Models\OrderItem;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\Request;
 
 class OrderItemUpdateController extends Controller
 {
@@ -17,7 +15,7 @@ class OrderItemUpdateController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-     */
+    */
     public function __invoke(OrderItem $orderItem, OrderItemUpdateRequest $request)
     {
         try {

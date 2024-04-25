@@ -7,9 +7,11 @@ use App\Models\Creator;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class OrderGetController extends Controller
 {
@@ -23,17 +25,25 @@ class OrderGetController extends Controller
     public function getOrder($orderId)
     {
         try {
-            $order = Order::with('order_items', 'creator')->findOrFail($orderId);
+            $order = Order::with('order_items', 'contributions')->findOrFail($orderId);
 
             $this->authorize('getOrder', $order);
 
+            $order->total_amount = $order->calculateTotalAmount();
+            $order->order_items_length = $order->order_items()->count();
+
+            $carbonDate = Carbon::parse($order->updated_at);
+            $order->time_ago = $carbonDate->diffForHumans();
+
+            foreach($order->order_items as $item){
+                $item->slug_name =  Str::slug($item->product()->select('title')->first()->title);
+            }
+
             return response()->json([
                 'status' => 'success',
-                'data' => [
-                    'order' => $order,
-                    'contributions' => $order->contributions
-                ]
+                'data' => $order
             ], 200);
+
         } catch (AuthorizationException $e) {
             return response()->json([
                 'status' => 'error',
@@ -43,8 +53,6 @@ class OrderGetController extends Controller
             return response()->json($e);
         }
     }
-
-
 
 
     /**
@@ -64,6 +72,14 @@ class OrderGetController extends Controller
                     ->orderBy('created_at', 'desc')
                     ->paginate($perPage);
 
+                foreach ($orders as $order) {
+                    $order->total_amount = $order->calculateTotalAmount();
+                    $order->order_items_length = $order->order_items()->count();
+
+                    $carbonDate = Carbon::parse($order->updated_at);
+                    $order->time_ago = $carbonDate->diffForHumans();
+                }
+                
                 return response()->json([
                     'status' => 'success',
                     'current_page' => $orders->currentPage(),
@@ -168,7 +184,8 @@ class OrderGetController extends Controller
     }
 
 
-    public function delete(Order $order){
+    public function delete(Order $order)
+    {
 
         try {
             $this->authorize('delete', $order);
@@ -177,19 +194,16 @@ class OrderGetController extends Controller
             $order->delete();
 
             return response()->json([
-                    'status' => 'success',
-                    'message' => 'Suppression effectuée avec succès.'
+                'status' => 'success',
+                'message' => 'Suppression effectuée avec succès.'
             ], 200);
-
         } catch (AuthorizationException $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Vous n\'êtes pas autorisé à faire cette action.',
             ], 403);
-
         } catch (Exception $e) {
             return response()->json($e);
         }
-
     }
 }

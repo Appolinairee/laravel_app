@@ -118,11 +118,13 @@ class GetProductController extends Controller
             $userId = $request->get('user_id');
             $product = Product::with(['medias', 'creator', 'comments'])->where('slug_name', $productSlug)->where('status', 1)->first();
 
-            $product->similarProducts = $product->similarProducts();
-            $product->likes_count = $product->likes()->count();
-            $product->comments_count = $product->comments()->count();
-            $product->medias_count = $product->medias()->count();
-            $product->is_liked = $product->isLiked($userId);
+            if ($product) {
+                $product->similarProducts = $product->similarProducts();
+                $product->likes_count = $product->likes()->count();
+                $product->comments_count = $product->comments()->count();
+                $product->medias_count = $product->medias()->count();
+                $product->is_liked = $product->isLiked($userId);
+            }
 
             if ($userId) {
                 $affiliateCode = User::findOrFail($userId)->affiliate_code;

@@ -11,8 +11,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Str;
 
 class GetProductController extends Controller
 {
@@ -112,6 +110,7 @@ class GetProductController extends Controller
         }
     }
 
+
     public function getProduct($productSlug, Request $request)
     {
         try {
@@ -129,6 +128,7 @@ class GetProductController extends Controller
             if ($userId) {
                 $affiliateCode = User::findOrFail($userId)->affiliate_code;
                 $product->affiliation_link = (new FrontendLink())->affiliateLink($product->title, $affiliateCode);
+                $product->is_liked = $product->isLiked($userId);
             }
 
             foreach ($product->comments as $comment) {
@@ -157,6 +157,7 @@ class GetProductController extends Controller
 
             foreach ($products as $product) {
                 $this->getProductOtherDetails($product, $userId);
+                $product->is_liked = $product->isLiked($userId);
             }
 
             return response()->json([
@@ -188,6 +189,7 @@ class GetProductController extends Controller
 
             foreach ($products as $product) {
                 $this->getProductOtherDetails($product, $userId);
+                $product->is_liked = $product->isLiked($userId);
             }
 
             return response()->json([
@@ -216,6 +218,7 @@ class GetProductController extends Controller
 
             foreach ($products as $product) {
                 $this->getProductOtherDetails($product, $userId);
+                $product->is_liked = $product->isLiked($userId);
             }
 
             return response()->json([

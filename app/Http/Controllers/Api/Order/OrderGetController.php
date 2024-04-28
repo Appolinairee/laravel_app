@@ -37,6 +37,7 @@ class OrderGetController extends Controller
 
             foreach($order->order_items as $item){
                 $item->slug_name =  Str::slug($item->product()->select('title')->first()->title);
+                $item->temporal_price = $item->product()->select('current_price')->first()->current_price;
             }
 
             return response()->json([

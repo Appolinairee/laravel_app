@@ -70,7 +70,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{product}', [UpdateProductController::class, '__invoke']);
         Route::delete('/{product}', [DeleteProductController::class, '__invoke']);
 
-
         // Product Media
         Route::post('/{product}/image', [MediasController::class, 'storeImage']);
         Route::post('/{product}/video', [MediasController::class, 'storeVideo']);

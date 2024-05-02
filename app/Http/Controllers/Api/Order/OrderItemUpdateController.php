@@ -7,6 +7,7 @@ use App\Http\Requests\Order\OrderItemUpdateRequest;
 use App\Models\OrderItem;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Facades\Http;
 
 class OrderItemUpdateController extends Controller
 {
@@ -21,9 +22,9 @@ class OrderItemUpdateController extends Controller
         try {
             $this->authorize('updateOrderItem', $orderItem->order);
 
-            $orderItemData = $request->only(['quantity', 'status', 'order_id']);
+            $orderItemData = $request->only(['quantity', 'status']);
 
-            if (empty($orderItemData)) {
+            if (empty($orderItemData) || !$orderItem->order) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Aucune information à mettre à jour.',
@@ -48,11 +49,9 @@ class OrderItemUpdateController extends Controller
 
             $orderItem->update($orderItemData);
 
-            return response()->json([
-                'status' => 'success',
-                'message' => "L'unité de commande est mise à jour.",
-                'data' => $orderItem->makeHidden(['order', 'product'])
-            ], 200);
+            $response = (new OrderGetController())->getOrder($orderItem->order->id);
+
+            return $response;
 
         } catch (AuthorizationException $e) {
 

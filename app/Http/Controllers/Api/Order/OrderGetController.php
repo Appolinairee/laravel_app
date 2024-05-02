@@ -190,8 +190,7 @@ class OrderGetController extends Controller
 
         try {
             $this->authorize('delete', $order);
-
-            // solf delete
+            
             $order->delete();
 
             return response()->json([

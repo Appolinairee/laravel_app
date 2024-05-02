@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
+use PDOException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -53,6 +54,11 @@ class Handler extends ExceptionHandler
                 'message' => 'Plusieurs requête à la fois. Veuillez réessayer dans une minute.',
             ], 429);
         }
+
+        if ($exception instanceof PDOException && $exception->getCode() == 2002) {
+            return response()->json(['error' => 'Erreur de connexion à la base de données: ' . $exception->getMessage()], 500);
+        }
+
 
         return parent::render($request, $exception);
     }

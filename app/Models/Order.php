@@ -57,7 +57,7 @@ class Order extends Model
         $orderItems = $this->order_items()->with('product')->get();
 
         return $orderItems->sum(function ($item) {
-            return $item->product->current_price;
+            return $item->product->current_price * $item->quantity;
         });
     }
 

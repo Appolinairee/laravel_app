@@ -27,7 +27,6 @@ class OrderItemUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'order_id' => 'sometimes|exists:orders,id',
             'quantity' => 'sometimes|integer|min:1',
             'status' => 'sometimes|integer|in:-1,0,1'
         ];

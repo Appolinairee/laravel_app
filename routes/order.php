@@ -23,11 +23,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/creator/{creator}', [OrderGetController::class, 'ordersByCreator']);
     Route::get('/product/{product}', [OrderGetController::class, 'ordersByProduct']);
 
-    Route::delete('{order}', [OrderGetController::class, 'delete']);
+    Route::delete('/{order}', [OrderGetController::class, 'delete']);
 
     // Payments routes
     Route::put('/{order}/payment', [PaymentController::class, 'update']);
-
+    Route::put('/{order}/refund', [PaymentController::class, 'refund']);
 
     /*
     |------------------------

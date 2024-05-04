@@ -49,5 +49,4 @@ class MessageUpdateController extends Controller
             return response()->json($e);
         }
     }
-
 }

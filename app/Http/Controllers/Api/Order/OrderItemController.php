@@ -42,22 +42,25 @@ class OrderItemController extends Controller
             $order = $orderItem->order;
             $this->authorize('delete', $orderItem->order);
 
-            if(!$orderItem || !$order){
+            if (!$orderItem || !$order) {
                 return response()->json([
                     'message' => 'Commande non trouvée.'
                 ], 400);
-            }
-
-            if ($order->order_items->count() == 1){
-                $order->delete();
-            }
+            }   
 
             $orderItem->delete();
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Suppression effectuée avec succès.'
-            ], 200);
+            if ($order->order_items->count() > 0) {
+                $response = (new OrderGetController())->getOrder($orderItem->order->id);
+                return $response;
+            } else {
+                $order->delete();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Suppression effectuée avec succès.'
+                ], 200);
+            }
+
         } catch (AuthorizationException $e) {
             return response()->json([
                 'status' => 'error',

@@ -96,7 +96,14 @@ class OrderPolicy
      */
     public function forceDelete(User $user, Order $order)
     {
-        //
+        
+    }
+
+
+
+    public function validateRefund (User $user, Order $order)
+    {
+        return $user->isAdmin();
     }
 
 }

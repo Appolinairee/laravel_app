@@ -7,7 +7,6 @@ use App\Http\Requests\Order\OrderItemUpdateRequest;
 use App\Models\OrderItem;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Support\Facades\Http;
 
 class OrderItemUpdateController extends Controller
 {

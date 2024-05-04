@@ -42,7 +42,7 @@ class PaymentController extends Controller
             }
 
             // for incorrect payment_type choice
-            if($request->payment_type == 1 && $order->payment_type == 0){
+            if ($request->payment_type == 1 && $order->payment_type == 0) {
                 return response()->json([
                     'message' => 'Mauvais type de paiement.',
                 ], 403);
@@ -213,5 +213,48 @@ class PaymentController extends Controller
         // user
         $this->InternNotificationUnit($user->id, $user, $order);
         $this->ExternNotificationUnit($user, $user);
+    }
+
+    public function refund(Order $order)
+    {
+        try {
+            $this->authorize('storeInExistingOrder', $order);
+
+            $order->update(['refund' => 1]);
+
+            return response()->json([
+                'message' => "Remboursement en cours de validation.",
+            ], 200);
+        } catch (AuthorizationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Vous n\'êtes pas autorisé à faire cette action.',
+            ], 403);
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
+    }
+
+
+
+    public function validateRefund(Order $order)
+    {
+        try {
+            $this->authorize('validateRefund', $order);
+
+            $order->update(['refund' => 2]);
+
+            return response()->json([
+                'message' => "Remboursement effectué avec succès.",
+            ], 200);
+
+        } catch (AuthorizationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Vous n\'êtes pas autorisé à faire cette action.',
+            ], 403);
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
     }
 }

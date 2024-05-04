@@ -187,7 +187,6 @@ class OrderGetController extends Controller
 
     public function delete(Order $order)
     {
-
         try {
             $this->authorize('delete', $order);
             

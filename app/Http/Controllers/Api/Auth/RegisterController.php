@@ -22,8 +22,6 @@ class RegisterController extends Controller
     public function __invoke(RegisterRequest $request)
     {
         try {
-            Mail::to($request->email)->send(new VerifyEmailMail($request->name, $request->email));
-
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -35,15 +33,11 @@ class RegisterController extends Controller
                 'affiliate_code' => substr(md5($request->name), 0, 8)
             ]);
 
-            $token = $user->createToken(env('BACKEND_KEY'))->plainTextToken;
+            Mail::to($request->email)->send(new VerifyEmailMail($request->name, $request->email));
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Utilisateur enrégistré. Un mail de vérification a envoyé',
-                'data' => [
-                    'user' => $user,
-                    'token' => $token
-                ]
             ], 201);
 
         } catch (Exception $e) {

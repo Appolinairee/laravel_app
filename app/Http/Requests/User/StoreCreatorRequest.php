@@ -33,7 +33,7 @@ class StoreCreatorRequest extends FormRequest
             'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:3000',
             'description' => 'nullable|string',
             'location' => 'nullable|string',
-            'delivery_poptions' => 'nullable|string',
+            'delivery_options' => 'nullable|string',
             'payment_options' => 'nullable|string',
         ];
     }

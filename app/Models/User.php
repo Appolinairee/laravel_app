@@ -25,7 +25,8 @@ class User extends Authenticatable
         'location',
         'email_verified_at',
         'balance',
-        'affiliate_balance'
+        'affiliate_balance',
+        'affiliate_code'
     ];
 
     /**

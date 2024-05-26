@@ -61,8 +61,6 @@ class CommentController extends Controller
                 'content' => $request->input('content'),
             ]);
 
-            $comment->load('user');
-
             return response()->json([
                 'status' => 'success',
                 'data' => $comment,

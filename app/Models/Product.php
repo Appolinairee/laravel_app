@@ -83,7 +83,7 @@ class Product extends Model
         return $this->interactions()->where('type', 'like');
     }
 
-    
+
     public function comments()
     {
         return $this->interactions()->where('type', 'comment');
@@ -97,5 +97,14 @@ class Product extends Model
     public function isLiked($userId): bool
     {
         return $this->likesForUser($userId)->exists();
+    }
+
+    public function canComment($userId): bool
+    {
+        $orderItems = OrderItem::whereHas('order', function ($query) use ($userId) {
+            $query->where('user_id', $userId)->where('status', '>', 3);
+        })->where('product_id', $this->id)->exists();
+    
+        return $orderItems;
     }
 }

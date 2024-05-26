@@ -20,7 +20,7 @@ class GetProductController extends Controller
             $perPage = $request->get('perPage', 12);
             $page = $request->get('page', 1);
             $queryParam = $request->get('query');
-            $userId = $request->get('user_id');
+            $userId = intval($request->get('user_id'));
 
             $productsQuery = Product::query()
                 ->where('status', 1)
@@ -28,7 +28,7 @@ class GetProductController extends Controller
                     $query->select('id', 'name', 'logo');
                 }])->select('id', 'title', 'old_price', 'current_price', 'creator_id', 'disponibility', 'slug_name');
 
-
+             
             if ($queryParam) {
                 $productsQuery->where(function ($query) use ($queryParam) {
                     $query->where('title', 'like', '%' . $queryParam . '%')
@@ -45,10 +45,8 @@ class GetProductController extends Controller
 
             $selectedProducts = collect();
 
-
             $latestProducts = $productsQuery->latest()->take($perPage)->get();
             $selectedProducts = $selectedProducts->merge($latestProducts);
-
 
             $randomProducts = $productsQuery->inRandomOrder()->take($perPage)->get();
             $selectedProducts = $selectedProducts->merge($randomProducts);
@@ -61,6 +59,7 @@ class GetProductController extends Controller
 
             foreach ($paginatedProducts as $product) {
                 $this->getProductOtherDetails($product, $userId);
+                $product->can_comment = $product->canComment($userId);
             }
 
             return response()->json([
@@ -77,7 +76,6 @@ class GetProductController extends Controller
             return response()->json($e);
         }
     }
-
 
     public function getProductsPresentations()
     {
@@ -115,14 +113,17 @@ class GetProductController extends Controller
     {
         try {
             $userId = $request->get('user_id');
-            $product = Product::with(['medias', 'creator', 'comments'])->where('slug_name', $productSlug)->where('status', 1)->first();
-
+            $product = Product::with(['medias', 'creator', 'comments' => function ($query) {
+                $query->latest();
+            }])->where('slug_name', $productSlug)->where('status', 1)->first();
+            
             if ($product) {
                 $product->similarProducts = $product->similarProducts();
                 $product->likes_count = $product->likes()->count();
                 $product->comments_count = $product->comments()->count();
                 $product->medias_count = $product->medias()->count();
                 $product->is_liked = $product->isLiked($userId);
+                $product->can_comment = $product->canComment($userId);
             }
 
             if ($userId) {
@@ -145,8 +146,6 @@ class GetProductController extends Controller
             return response()->json($e);
         }
     }
-
-
 
     public function getProductByCreator(Request $request, Creator $creator)
     {
@@ -174,7 +173,6 @@ class GetProductController extends Controller
             return response()->json($e);
         }
     }
-
 
 
     public function getProductByCategory(Category $category, Request $request)

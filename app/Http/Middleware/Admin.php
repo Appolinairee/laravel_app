@@ -23,6 +23,6 @@ class Admin
         return response()->json([
             'status' => 'error',
             'message' => 'Accès non autorisé. Vous devez être administrateur.',
-        ], 403);;
+        ], 403);
     }
 }

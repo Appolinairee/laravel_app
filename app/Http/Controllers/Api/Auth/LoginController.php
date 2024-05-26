@@ -28,6 +28,9 @@ class LoginController extends Controller
                     $notificationCount = $user->notifications()->where('state', 0)->count();
                     $messageCount = $user->messages()->where('status', 0)->count();
 
+                    if($user->creator)
+                        $user->load('creator');
+
                     return response()->json([
                         'status' => 'success',
                         'message' => 'Utilisateur connecté',

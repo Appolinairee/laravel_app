@@ -25,7 +25,7 @@ class Interaction extends Model
 
     public function comments()
     {
-        return $this->morphMany(Interaction::class, 'interactable');
+        return $this->morphMany(Interaction::class, 'interactable')->latest();
     }
 
     public function likes()
@@ -39,7 +39,7 @@ class Interaction extends Model
         return $this->belongsTo(User::class);
     }
 
-    
+
     // public function commentComments()
     // {
     //     return $this->comments()->where('interaction_type', 'comment');

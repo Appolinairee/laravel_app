@@ -27,6 +27,9 @@ class UserController extends Controller
             if ($userId == auth()->user()->id || auth()->user()->isAdmin()) {
                 $user = User::find($userId);
 
+                if($user->creator)
+                    $user->load('creator');
+
                 if ($user) {
                     return response()->json([
                         'status' => 'success',
@@ -66,6 +69,9 @@ class UserController extends Controller
 
                 $user->notification_count = $user->notifications()->where('state', 0)->count();
                 $user->message_count = $user->messages()->where('status', 0)->count();
+
+                if($user->creator)
+                    $user->load('creator');
 
                 return response()->json([
                     'status' => 'success',

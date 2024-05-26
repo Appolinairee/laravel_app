@@ -55,11 +55,13 @@ class StoreCreatorController extends Controller
 
                 // send notifications 
                 $this->notifyAdminsAndCreator($admins, $creator);
+                $user = auth()->user();
+                $user->load('creator');
 
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Votre requête pour devenir créateur sur AtounAfrica est pris en compte.',
-                    'data' => $creator
+                    'data' =>  $user 
                 ], 201);
                 
             } else {

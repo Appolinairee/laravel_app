@@ -30,6 +30,15 @@ class User extends Authenticatable
     ];
 
     /**
+     * @var array
+     */
+    
+    protected $appends = [
+        'notification_count',
+        'message_count',
+    ];
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
@@ -68,6 +77,31 @@ class User extends Authenticatable
     }
 
 
+
+    /**
+     * Get the number of unread notifications for the user.
+     *
+     * @return int
+     */
+    public function getNotificationCountAttribute()
+    {
+        return $this->notifications()->where('state', 0)->count();
+    }
+
+
+
+    /**
+     * Get the number of unread messages for the user.
+     *
+     * @return int
+     */
+    public function getMessageCountAttribute()
+    {
+        return $this->messages()->where('status', 0)->count();
+    }
+
+
+
     public function orders()
     {
         return $this->hasMany(Order::class);
@@ -88,5 +122,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class);
     }
-
 }

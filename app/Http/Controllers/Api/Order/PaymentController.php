@@ -144,7 +144,7 @@ class PaymentController extends Controller
             ], 200);
         } catch (AuthorizationException $e) {
             return response()->json([
-                'status' => 'error',
+                'status' => 'error',    
                 'message' => 'Vous n\'êtes pas autorisé à faire cette action.',
             ], 403);
         } catch (Exception $e) {

@@ -25,9 +25,6 @@ class LoginController extends Controller
                 if ($user->email_verified_at) {
                     $token = $user->createToken(env('BACKEND_KEY'))->plainTextToken;
 
-                    $notificationCount = $user->notifications()->where('state', 0)->count();
-                    $messageCount = $user->messages()->where('status', 0)->count();
-
                     if($user->creator)
                         $user->load('creator');
 
@@ -37,8 +34,6 @@ class LoginController extends Controller
                         'data' => [
                             'user' => $user,
                             'token' => $token,
-                            'notification_count' => $notificationCount,
-                            'message_count' => $messageCount
                         ]
                     ], 200);
                 } else {

@@ -33,7 +33,7 @@ class UpdateCreatorRequest extends FormRequest
             'logo' => 'sometimes|image|mimes:jpeg,png,jpg|max:5120',
             'description' => 'sometimes|string',
             'location' => 'sometimes|string',
-            'delivery_poptions' => 'sometimes|string',
+            'delivery_options' => 'sometimes|string',
             'payment_options' => 'sometimes|string',
         ];
     }

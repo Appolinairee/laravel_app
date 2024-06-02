@@ -25,20 +25,17 @@ class StoreCreatorController extends Controller
 
             if (!auth()->user()->creator) {
 
-                // store logo first
                 if ($request->hasFile('logo')) {
                     $logoPath = $request->file('logo')->store('logos', 'public');
                 } else {
                     $logoPath = null;
                 }
 
-                // notifications for admins
                 $admins = User::where('role', 'admin')->get();
 
                 foreach ($admins as $admin) {
                     $admin->notify(new NewCreatorNotification($request->name));
                 }
-
 
                 $creator = Creator::create([
                     'name' => $request->name,

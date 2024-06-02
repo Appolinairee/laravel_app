@@ -14,6 +14,14 @@ When user request to restore some account, notification should be sended for all
 
 
 ## CREATOR
+     Les options de livraison
+          atoun 
+          vendeur 
+
+     On a 3 types de paiement
+          MTN/MOOV: numéro Bénin
+          Bancaire: numéro compte bancaire
+          En espèces: null
 
 
 ## PRODUCT

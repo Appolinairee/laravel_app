@@ -66,13 +66,9 @@ class UserController extends Controller
             $user = auth()->user();
 
             if ($user) {
-
-                $user->notification_count = $user->notifications()->where('state', 0)->count();
-                $user->message_count = $user->messages()->where('status', 0)->count();
-
                 if($user->creator)
                     $user->load('creator');
-
+                
                 return response()->json([
                     'status' => 'success',
                     'data' => $user,

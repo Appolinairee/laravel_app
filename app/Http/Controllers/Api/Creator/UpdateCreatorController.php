@@ -30,12 +30,12 @@ class UpdateCreatorController extends Controller
                 ], 403);
             }else{
                 
-                $creatorData = $request->only(['name', 'phone', 'email', 'description', 'location', 'delivery_poptions', 'payment_options']);
+                $creatorData = $request->only(['name', 'phone', 'email', 'description', 'location', 'delivery_options', 'payment_options']);
 
                 if (empty($creatorData) && !$request->hasFile('logo')) {
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Aucune information à mettre à jour.',
+                        'message' => $creatorData,
                     ], 400);
                 }
 
@@ -58,10 +58,13 @@ class UpdateCreatorController extends Controller
                     $message = $this->updateEmail($creator);
                 }
 
+                $user = auth()->user();
+                $user->load('creator');
+
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Mise à jour du profil effectuée.' . $message,
-                    'data' => $creator,
+                    'data' => $user,
                 ], 200);
                 
             }
@@ -77,7 +80,7 @@ class UpdateCreatorController extends Controller
         ]);
 
         // envoie de mail
-        Mail::to($creator->email)->send(new VerifyEmailMail($creator));
+        Mail::to($creator->email)->send(new VerifyEmailMail($creator->name, $creator->email));
         Auth::user()->tokens()->delete();
         
         $mailIsSendMessage = "Changement d'adresse mail. Un mail a été envoyé. L'utilisateur a été déconnecté.";

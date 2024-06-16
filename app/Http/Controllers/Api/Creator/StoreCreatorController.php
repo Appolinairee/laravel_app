@@ -47,7 +47,8 @@ class StoreCreatorController extends Controller
                     'location' => $request->location,
                     'delivery_options' => $request->delivery_options,
                     'payment_options' =>  $request->payment_options,
-                    'user_id' => auth()->user()->id
+                    'user_id' => auth()->user()->id,
+                    'payment_method' => $request->payment_method
                 ]);
 
                 // send notifications 

@@ -27,14 +27,15 @@ class UpdateCreatorRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'sometimes|required|unique:creators,name',
-            'phone' => 'sometimes|string|unique:creators,phone',
-            'email' => 'sometimes|email|unique:creators,email',
-            'logo' => 'sometimes|image|mimes:jpeg,png,jpg|max:5120',
-            'description' => 'sometimes|string',
-            'location' => 'sometimes|string',
-            'delivery_options' => 'sometimes|string',
-            'payment_options' => 'sometimes|string',
+            'name' => 'nullable|nullable|unique:creators,name',
+            'phone' => 'nullable|string|unique:creators,phone',
+            'email' => 'nullable|email|unique:creators,email',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'description' => 'nullable|string',
+            'location' => 'nullable|string',
+            'delivery_options' => 'nullable|string',
+            'payment_options' => 'nullable|string',
+            'payment_method' => 'nullable|string'
         ];
     }
 

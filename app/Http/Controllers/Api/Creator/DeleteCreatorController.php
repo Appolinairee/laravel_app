@@ -18,13 +18,12 @@ class DeleteCreatorController extends Controller
                     'message' => 'Vous n\'avez pas l\'autorisation de mettre à jour ce créateur.',
                 ], 403);
             }else{
-
                 // solf delete
                 $creator->delete();
 
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Suppression effectuée avec succès.'
+                    'data' => auth()->user()
                 ], 200);
             }
 

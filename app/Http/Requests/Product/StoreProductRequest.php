@@ -28,14 +28,14 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'title' => 'required|string|unique:products,title',
-            'caracteristics' => 'required|string',
+            'caracteristics' => 'nullable|string',
             'delivering' => 'nullable|string',
             'old_price' => 'nullable|numeric|min:0',
             'current_price' => 'required|numeric|min:0',
             'category_ids' => 'array|required_without_all:new_category',
             'category_ids.*' => 'exists:categories,id',
             'new_category' => 'nullable|string|unique:categories,name',
-            'disponibility' => 'required|in:-1,0,1',
+            'disponibility' => 'nullable|in:-1,0,1',
             'quantity' => 'nullable|integer|min:1',
         ];
     }

@@ -35,6 +35,7 @@ class StoreCreatorRequest extends FormRequest
             'location' => 'nullable|string',
             'delivery_options' => 'nullable|string',
             'payment_options' => 'nullable|string',
+            'payment_method' => 'nullable|string'
         ];
     }
 

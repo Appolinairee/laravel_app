@@ -30,7 +30,7 @@ class UpdateCreatorController extends Controller
                 ], 403);
             }else{
                 
-                $creatorData = $request->only(['name', 'phone', 'email', 'description', 'location', 'delivery_options', 'payment_options']);
+                $creatorData = $request->only(['name', 'phone', 'email', 'description', 'location', 'delivery_options', 'payment_options', 'payment_method']);
 
                 if (empty($creatorData) && !$request->hasFile('logo')) {
                     return response()->json([

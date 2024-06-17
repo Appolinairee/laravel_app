@@ -27,16 +27,18 @@ class StoreProductImageRequest extends FormRequest
     public function rules()
     {
         return [
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:4000'
+            'images' => 'required',
+            'images.*' => 'image|mimes:jpeg,png,jpg|max:4000'
         ];
     }
 
 
     /**
      * Determine if the user is authorized to make this request.
-    */
+     */
 
-    public function failedValidation(Validator $validator){
+    public function failedValidation(Validator $validator)
+    {
         throw new HttpResponseException(response()->json([
             'success' => false,
             'error' => true,

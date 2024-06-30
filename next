@@ -1,37 +1,13 @@
-# urgence fixing for best integration
+- think about a calculates attibuts which should be send
+- Gestion des paiements et des remboursements
+- Gestion des notifiactions (Paiement, validation, livraison, ..) and styles 
+- produits similaires
 
--  for each order_item, client want to know the temporal price.
-    Two alternatives:  
-    -Think to complete product details about order_item
-    -send price as attribut of order_item
-
-- delete images or files when element is delete permanently
-
+- admin management (think about lines into trash)
+- Account restauration: how know that user have sended request to restore account.
 
 
-
-
-
-
-
-
-
-
-
-### Let's think this 
-
-# demande de remboursement par les utilisateurs.
-# Route::post('/wallet/withdraw', [WalletController::class, 'withdrawFunds']);
-
-# Incopore front route for notification's link and for mail url
-    # Comment constituer le lien d'une notification 
-
-# -Paiements sur une commande du créateur => mail(paiement final) 
-
-# Système de Recommandation Simple: on se base sur les métadonnées pour proposer au client des produits
-    # improve similar products
-
-# Mise en place des notifications:
+# Détails sur les notifications :
     -Createur
         -confirmation de la demande de devenir créateur => mail
         -Demande de livraison sur une commande payée
@@ -43,17 +19,3 @@
         -Paiement sur une commande => mail à chaque fois
         -Paiement Affiliation
         -Remboursement => mail
-
-
-Admins
-
-# confirmation de rembourement par les admins   
-
-# admin should really access the data in every trash also
-    return order_items or order in trash
-    return messages in trash
-
-# how know that user have sended request to restore account. How to block many restore resquest from same email.
-
-# Notifications externes: Revoir les notifications envoyées et bien les formuler
-    # style welcome notification and other notifications

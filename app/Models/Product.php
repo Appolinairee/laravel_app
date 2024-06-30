@@ -29,6 +29,8 @@ class Product extends Model
         'slug_name'
     ];
 
+    protected $appends = ['categories'];
+
     public function creator()
     {
         return $this->belongsTo(Creator::class);
@@ -48,6 +50,22 @@ class Product extends Model
         return $this->belongsToMany(Category::class);
     }
 
+    public function getCategoriesAttribute()
+    {
+        $categories = $this->categories()->select('categories.id', 'categories.name')->where('categories.statut', 'active')->get();
+        
+        $formattedCategories = $categories->map(function ($category) {
+            return [
+                'id' => $category->id,
+                'name' => $category->name,  
+            ];
+        });
+    
+        return $formattedCategories->toArray();
+    }
+
+
+
     /**
      * Get similars products of this Product
      */
@@ -61,7 +79,6 @@ class Product extends Model
             ->take(5)
             ->get();
     }
-
 
     /**
      * Get similars products of this Product

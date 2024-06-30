@@ -73,7 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Product Media
         Route::post('/{product}/images', [MediasController::class, 'storeImages']);
         Route::post('/{product}/video', [MediasController::class, 'storeVideo']);
-        Route::delete('/{product}/{media}', [MediasController::class, 'delete']);
+        Route::delete('/media/{media}', [MediasController::class, 'delete']);
     });
 
 

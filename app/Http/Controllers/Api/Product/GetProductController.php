@@ -17,7 +17,7 @@ class GetProductController extends Controller
     public function getProducts(Request $request)
     {
         try {
-            $perPage = $request->get('perPage', 12);
+            $perPage = $request->get('perPage', 6);
             $page = $request->get('page', 1);
             $queryParam = $request->get('query');
             $userId = intval($request->get('user_id'));
@@ -27,21 +27,13 @@ class GetProductController extends Controller
                 ->with(['creator' => function ($query) {
                     $query->select('id', 'name', 'logo');
                 }])->select('id', 'title', 'old_price', 'current_price', 'creator_id', 'disponibility', 'slug_name');
-
              
             if ($queryParam) {
                 $productsQuery->where(function ($query) use ($queryParam) {
                     $query->where('title', 'like', '%' . $queryParam . '%')
-                        ->orWhere('description', 'like', '%' . $queryParam . '%');
+                        ->orWhere('caracteristics', 'like', '%' . $queryParam . '%');
                 });
             }
-
-            // if ($query) {
-            //     $productsQuery = Product::query();
-            //     $allProducts = $productsQuery->where('title', 'like', '%' . $query . '%')->where('status', 1)->get();
-            // } else {
-            //     $allProducts = Product::with('medias')->where('status', 1)->get();
-            // }
 
             $selectedProducts = collect();
 
@@ -61,6 +53,13 @@ class GetProductController extends Controller
                 $this->getProductOtherDetails($product, $userId);
                 $product->can_comment = $product->canComment($userId);
             }
+
+            $paginatedProducts->appends([
+                'perPage' => $perPage,
+                'page' => $page,
+                'query' => $queryParam,
+                'user_id' => $userId,
+            ]);
 
             return response()->json([
                 'status' => 'success',
@@ -116,9 +115,10 @@ class GetProductController extends Controller
             $product = Product::with(['medias', 'creator', 'comments' => function ($query) {
                 $query->latest();
             }])->where('slug_name', $productSlug)->where('status', 1)->first();
+
             
             if ($product) {
-                $product->similarProducts = $product->similarProducts();
+                // $product->similarProducts = $product->similarProducts();
                 $product->likes_count = $product->likes()->count();
                 $product->comments_count = $product->comments()->count();
                 $product->medias_count = $product->medias()->count();
@@ -143,7 +143,7 @@ class GetProductController extends Controller
                 'data' => $product
             ], 200);
         } catch (Exception $e) {
-            return response()->json($e);
+            return response()->json($e->getMessage(), 500);
         }
     }
 
@@ -157,6 +157,7 @@ class GetProductController extends Controller
             foreach ($products as $product) {
                 $this->getProductOtherDetails($product, $userId);
                 $product->is_liked = $product->isLiked($userId);
+                $product->load('medias');
             }
 
             return response()->json([

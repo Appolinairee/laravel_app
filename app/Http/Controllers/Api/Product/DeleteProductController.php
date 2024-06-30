@@ -11,7 +11,7 @@ class DeleteProductController extends Controller
 {
     public function __invoke(Product $product){
         try {
-            if (auth()->user()->id !== $product->creator_id && !$this->authorize('isAdmin', auth()->user())) {
+            if (auth()->user()->creator->id !== $product->creator_id && !$this->authorize('isAdmin', auth()->user())) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Vous n\'avez pas l\'autorisation de supprimer cet utilisateur.',

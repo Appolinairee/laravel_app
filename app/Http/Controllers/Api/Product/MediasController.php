@@ -117,9 +117,9 @@ class MediasController extends Controller
     }
 
 
-    public function delete(Product $product, Media $media){
+    public function delete(Media $media){
         try {
-            if($product->creator_id == auth()->user()->creator->id || auth()->user()->isAdmin()){
+            if($media->product->creator_id == auth()->user()->creator->id || auth()->user()->isAdmin()){
 
                 $media->delete();
     

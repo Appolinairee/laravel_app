@@ -14,8 +14,7 @@ class UpdateProductController extends Controller
 {
     public function __invoke(Product $product, UpdateProductRequest $request){
         try {
-
-            if (auth()->user()->id !== $product->creator_id && !auth()->user()->isAdmin()) {
+            if (auth()->user()->creator->id !== $product->creator_id && !auth()->user()->isAdmin()) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Vous n\'avez pas l\'autorisation de mettre à jour ce créateur.',
@@ -23,17 +22,15 @@ class UpdateProductController extends Controller
             }else{
                 $productData = $request->only(['title', 'caracteristics', 'delivering', 'old_price', 'current_price', 'disponibility']);
 
-
-                if (empty($productData) && empty($request->category_ids) && $request->new_category) {
+                if (empty($productData) && empty($request->category_ids) && !$request->new_category) {
                     return response()->json([
                         'status' => 'error',
                         'message' => 'Aucune information à mettre à jour.',
                     ], 400);
                 }
 
-
                 // quantity can be update when disponibility is 1(true)
-                if(isset($request->quantity) && $request->disponibility == 1){
+                if(isset($request->quantity) && $product->disponibility == 1){
                     $productData['quantity'] = $request->quantity;
                 }else if(isset($request->quantity) && $request->disponibility != 1){
                     return response()->json([
@@ -64,7 +61,7 @@ class UpdateProductController extends Controller
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Mise à jour du produit effectuée.',
-                    'data' =>  $product->fresh('categories')
+                    'data' =>  $product
                 ], 200);
             }
 

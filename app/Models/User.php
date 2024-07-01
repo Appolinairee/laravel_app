@@ -35,8 +35,9 @@ class User extends Authenticatable
     
     protected $appends = [
         'notification_count',
-        'message_count',
+        'message_count'
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -122,4 +123,24 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class);
     }
+
+    public function wallets() {
+        return $this->hasMany(Wallet::class); 
+    }
+
+    public function standardWallets()
+    {
+        return $this->hasMany(Wallet::class)->where('wallet_type', 'user');
+    }
+
+    public function creatorWallets()
+    {
+        return $this->hasMany(Wallet::class)->where('wallet_type', 'creator');
+    }
+    
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
 }

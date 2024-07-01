@@ -1,0 +1,106 @@
+- Créer un nouveau paiement. (en fonction de son type)
+- récupérer tous les paiements d'un utilisateur
+
+- enrégister une transaction du portefeuille (frais de livraison, frais de commande)
+- reconnaitre une vente par affiliation
+- mettre à jour le portefeuille et la commission si une vente par affiliation
+- Obtenir la vue d'ensemble du tableau de bord de l'utilisateur.
+- Lister les contributions de l'utilisateur.
+- Lister les retraits de l'utilisateur.
+- Lister tous les paiements.
+- Lister tous les frais de livraison.
+- lister els détails de commissions
+
+
+- Faire une demande de retrait.
+- Lister les retraits du vendeur.
+- Obtenir la vue d'ensemble du tableau de bord du vendeur.
+- Lister toutes les transactions du vendeur.
+- Lister les commissions d'affiliation du vendeur.
+- Lister les livraisons
+- Estimer les frais de livraison d'une commande
+- estimer la date de livraison
+
+
+- Supprimer un paiement
+- Mettre à jour un frais de livraison. (changer le statut)
+- Mettre à jour le jour de livraison (changer le statut)
+
+
+- permettre de reseigner le paiement d'un utilistauer pour un produit sur le terrain pour une commande
+
+
+Table users
+Table wallets
+Table wallet_transactions
+Table orders
+Table payments
+Table withdrawals
+Table commissions
+
+
+CREATE TABLE wallets (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    balance DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE wallet_transactions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    wallet_id INT NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    transaction_type ENUM('credit', 'debit') NOT NULL,
+    description VARCHAR(255),
+    transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (wallet_id) REFERENCES wallets(id)
+);
+
+
+CREATE TABLE orders (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL,  -- Montant total incluant les frais de livraison
+    product_amount DECIMAL(10, 2) NOT NULL,  -- Montant des produits sans les frais de livraison
+    delivery_fee DECIMAL(10, 2) NOT NULL,  -- Frais de livraison
+    payment_method ENUM('wallet', 'credit_card', 'paypal', 'cash_on_delivery') NOT NULL,  -- Méthode de paiement utilisée pour la commande
+    order_status ENUM('pending', 'paid', 'delivered') NOT NULL,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE payments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    payment_type ENUM('contribution', 'order', 'delivery') NOT NULL,
+    order_id INT,  -- Null si le paiement n'est pas lié à une commande
+    payment_method ENUM('wallet', 'credit_card', 'paypal') NOT NULL,  -- Méthode de paiement utilisée
+    payment_status ENUM('pending', 'completed', 'failed') NOT NULL,
+    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (order_id) REFERENCES orders(id)  -- Null si non applicable
+);
+
+CREATE TABLE withdrawals (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    withdrawal_status ENUM('pending', 'approved', 'rejected') NOT NULL,
+    request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    approval_date TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE commissions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    source_order_id INT NOT NULL,
+    commission_status ENUM('pending', 'paid') NOT NULL,
+    earned_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    paid_date TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (source_order_id) REFERENCES orders(id)
+);

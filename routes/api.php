@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Interaction\NotificationController;
 use App\Http\Controllers\Api\Message\MessageController;
 use App\Http\Controllers\Api\Message\MessageStoreController;
 use App\Http\Controllers\Api\Message\MessageUpdateController;
+use App\Http\Controllers\API\Payment\PaymentController;
 use App\Http\Controllers\Api\Product\DeleteProductController;
 use App\Http\Controllers\Api\Product\getProductController;
 use App\Http\Controllers\Api\Product\LikeContoller;
@@ -105,12 +106,22 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | API Messages Routes
+    | API Notifications Routes
     |--------------------------------------------------------------------------
     */
     Route::prefix('notifications')->group(function () {
         Route::get('', [NotificationController::class, 'getUserNotifications']);
         Route::put('/{notification}', [NotificationController::class, 'updateNotificationState']);
+    });
+
+    /*
+    |----------------------
+    | API  Routes Payments
+    |----------------------
+    */
+    Route::prefix('payments')->group(function () {
+        Route::post('', [PaymentController::class, 'store']);
+        Route::get('user/{user}', [PaymentController::class, 'getByUser'])->middleware('check.user.or.admin');
     });
 
 });

@@ -128,15 +128,15 @@ class User extends Authenticatable
         return $this->hasMany(Wallet::class); 
     }
 
-    public function standardWallets()
-    {
-        return $this->hasMany(Wallet::class)->where('wallet_type', 'user');
-    }
+    public function standardWallet()
+{
+    return $this->hasOne(Wallet::class)->where('wallet_type', 'user');
+}
 
-    public function creatorWallets()
-    {
-        return $this->hasMany(Wallet::class)->where('wallet_type', 'creator');
-    }
+public function creatorWallet()
+{
+    return $this->hasOne(Wallet::class)->where('wallet_type', 'creator');
+}
     
     public function payments()
     {

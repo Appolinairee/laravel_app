@@ -19,7 +19,7 @@ class OrderPolicy
      */
     public function getOrder(User $user, Order $order)
     {
-        return ($user->id === $order->user_id) || $user->isAdmin() || ($user->id === $order->creator_id);
+        return ($user->id === $order->user_id) || $user->isAdmin() || ($user->creator->id === $order->creator_id);
     }
 
     
@@ -46,7 +46,6 @@ class OrderPolicy
     {
         return $user->id === $order->user_id;
     }
-
 
     /**
      * Determine whether the user can update the model.
@@ -85,20 +84,6 @@ class OrderPolicy
     {
         return ($user->id === $order->user_id) || $user->isAdmin();
     }
-
-    
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function forceDelete(User $user, Order $order)
-    {
-        
-    }
-
 
 
     public function validateRefund (User $user, Order $order)

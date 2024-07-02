@@ -1,7 +1,10 @@
 - Créer un nouveau paiement. (en fonction de son type)
 - récupérer tous les paiements d'un utilisateur
+- enrégister une transaction du portefeuille
+- endpoint pour payer pour une commande, payer pour la livraison
 
-- enrégister une transaction du portefeuille (frais de livraison, frais de commande)
+- endpoint pour valider une livraison
+
 - reconnaitre une vente par affiliation
 - mettre à jour le portefeuille et la commission si une vente par affiliation
 - Obtenir la vue d'ensemble du tableau de bord de l'utilisateur.
@@ -29,6 +32,10 @@
 
 - permettre de reseigner le paiement d'un utilistauer pour un produit sur le terrain pour une commande
 
+Statistiques
+    - portefeuille, commissions frais, contributions
+    - portefeuille, vente total, vente en cours
+
 
 Table users
 Table wallets
@@ -37,6 +44,9 @@ Table orders
 Table payments
 Table withdrawals
 Table commissions
+
+User --> Wallet --> WTransaction
+
 
 
 CREATE TABLE wallets (

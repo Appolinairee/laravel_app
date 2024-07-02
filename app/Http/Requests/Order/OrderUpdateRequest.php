@@ -33,7 +33,7 @@ class OrderUpdateRequest extends FormRequest
             'shipping_preview' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
             'shipping_service' => 'sometimes|string',
             'shipping_date' => 'sometimes|date|date_format:Y-m-d\TH:i', 
-            'shipping_contact'=> 'sometimes|numeric|regex:/^\d{8}$/'
+            'shipping_contact'=> 'sometimes|numeric|regex:/^\d{8}$/',
         ];
     }
 

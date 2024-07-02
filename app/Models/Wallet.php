@@ -17,4 +17,13 @@ class Wallet extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function walletTransactions () {
+        return $this->hasMany(WalletTransaction::class);
+    }
+
+
+    // wallet_type:  'user' | 'creator'
+    // default('user')
+
 }

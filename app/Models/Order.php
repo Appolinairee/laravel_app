@@ -22,9 +22,9 @@ class Order extends Model
         'shipping_contact',
         'creator_id',
         'amount_paid',
-        'payment_type',
-        'payment_status',
+        'shipping_paid',
         'refund',
+        'can_ship'
     ];
 
     protected $casts = [

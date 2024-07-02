@@ -23,7 +23,6 @@ class PaymentController extends Controller
     public function update(PaymentUpdateRequest $request, Order $order)
     {
         try {
-            $this->authorize('storeInExistingOrder', $order);
 
             $orderData = $request->only(['amount_paid', 'payment_type']);
 
@@ -69,8 +68,8 @@ class PaymentController extends Controller
                 $order->update(['amount_paid' => $request->amount_paid]);
                 $order->update(['payment_type' => $request->payment_type]);
 
-                $order->update(['payment_status' => 1]); //paid status
-                $order->update(['status' => 1]); //delievering status
+                $order->update(['payment_status' => 1]);
+                $order->update(['status' => 1]); 
 
                 $this->notifyForPayment($order->creator, auth()->user(), $order);
 
@@ -234,8 +233,6 @@ class PaymentController extends Controller
             return response()->json($e);
         }
     }
-
-
 
     public function validateRefund(Order $order)
     {

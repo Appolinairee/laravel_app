@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Order\OrderItemStoreController;
 use App\Http\Controllers\Api\Order\OrderItemUpdateController;
 use App\Http\Controllers\Api\Order\OrderUpdateController;
 use App\Http\Controllers\Api\Order\PaymentController;
+use App\Http\Controllers\API\Payment\PaymentController as PaymentPaymentController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -26,8 +27,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/{order}', [OrderGetController::class, 'delete']);
 
     // Payments routes
-    Route::put('/{order}/payment', [PaymentController::class, 'update']);
-    Route::put('/{order}/refund', [PaymentController::class, 'refund']);
+    Route::put('/{order}/payment', [PaymentPaymentController::class, 'paymentForOrder']);
+    Route::put('/{order}/shipping_payment', [PaymentPaymentController::class, 'paymentForDelivery']);
+    // Route::put('/{order}/refund', [PaymentController::class, 'refund']);
 
     /*
     |------------------------
